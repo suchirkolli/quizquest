@@ -1,2 +1,5 @@
 # QuizQuest
 QuizQuest is a single-player, web-based quiz game that turns studying into replayable runs of topics of the user's choice, with power-ups, streaks, and progression. It aims to be a website that gives learning gamelike attributes which reward players for continued success. It uses a money-like system, allowing a player to select benefits that’d increase their wealth among a variety of options. The player’s primary goal is to reach a million dollars, with buffs varying based on the amount of correct answers chosen. Upon selecting incorrect answers, the player loses money and receives an explanation why their selected answer was incorrect.
+
+
+Trello Link: https://trello.com/invite/b/698bc0208ac083c977531e2f/ATTIef2a9ccab623eef254daee45097bf103016FB0E4/quizquest-sprint-board
