@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/NavBar';
+import Welcome from './pages/Welcome';
 
 type PlaceholderPageProps = {
   title: string;
@@ -24,15 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/welcome" replace />} />
 
-        <Route
-          path="/welcome"
-          element={
-            <PlaceholderPage
-              title="Welcome"
-              text="This is the temporary welcome page route."
-            />
-          }
-        />
+        <Route path="/welcome" element={<Welcome />} />
 
         <Route
           path="/login"
@@ -57,4 +50,5 @@ function App() {
     </div>
   );
 }
+
 export default App;
