@@ -2,29 +2,37 @@ import { Link } from 'react-router-dom';
 
 function Welcome() {
   return (
-    <div>
-      <h1>Quiz Quest</h1>
+    <div className="welcome-page-wrapper">
+      <div className="welcome-panel">
+        <div className="welcome-top-text">Welcome to Quiz Quest</div>
 
-      <h2>Embark on your quest for knowledge</h2>
+        <h1 className="welcome-main-title">Embark on your quest for knowledge</h1>
 
-      <p>
-        Welcome to Quiz Quest, where studying is turned into a more interactive
-        and game-like experience.
-      </p>
+        <p className="welcome-description">
+          Quiz Quest turns studying into a more interactive and game-like
+          experience.
+        </p>
 
-      <p>
-        Choose whether you are an existing user returning to continue your quest,
-        or a new user creating an account for the first time.
-      </p>
+        <p className="welcome-description">
+          Choose whether you want to return as an existing user or create a new
+          account and begin your journey.
+        </p>
 
-      <div>
-        <Link to="/login">Existing User</Link>
-      </div>
+        <div className="welcome-button-area">
+          <Link className="quest-link-button" to="/login">
+            Existing User
+          </Link>
 
-      <br />
+          <Link className="quest-link-button" to="/register">
+            New Account
+          </Link>
+        </div>
 
-      <div>
-        <Link to="/register">New Account</Link>
+        <div className="welcome-small-box">
+          <p className="welcome-small-box-title">Mock data:</p>
+          <p>username: gandalf</p>
+          <p>passowrd: wizard101</p>
+        </div>
       </div>
     </div>
   );
