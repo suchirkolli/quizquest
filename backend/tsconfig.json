@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
+    "ignoreDeprecations": "6.0", // included due to warnings of node being depreciated
     "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./dist",
