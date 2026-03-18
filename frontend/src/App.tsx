@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/NavBar';
+import Register from './pages/Register';
 import Welcome from './pages/Welcome';
 
 type PlaceholderPageProps = {
@@ -10,7 +11,7 @@ type PlaceholderPageProps = {
 
 function PlaceholderPage({ title, text }: PlaceholderPageProps) {
   return (
-    <div>
+    <div className="page-placeholder">
       <h1>{title}</h1>
       <p>{text}</p>
     </div>
@@ -26,6 +27,7 @@ function App() {
         <Route path="/" element={<Navigate to="/welcome" replace />} />
 
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/register" element={<Register />} />
 
         <Route
           path="/login"
@@ -38,11 +40,21 @@ function App() {
         />
 
         <Route
-          path="/register"
+          path="/register/teacher"
           element={
             <PlaceholderPage
-              title="Register"
-              text="This is the temporary register page route."
+              title="Teacher Registration"
+              text="This is the temporary teacher registration route."
+            />
+          }
+        />
+
+        <Route
+          path="/register/student"
+          element={
+            <PlaceholderPage
+              title="Student Registration"
+              text="This is the temporary student registration route."
             />
           }
         />

@@ -3,7 +3,7 @@ export const startingUsers: User[] = [
   {
     username: 'Gandalf',
     password: 'wizard101',
-    role: 'Admin',
+    role: 'Teacher',
   },
   {
     username: 'Frodo',
