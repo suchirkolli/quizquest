@@ -3,6 +3,7 @@ import './App.css';
 import NavBar from './components/NavBar';
 import Register from './pages/Register';
 import Welcome from './pages/Welcome';
+import Login from './pages/Login';
 
 type PlaceholderPageProps = {
   title: string;
@@ -28,16 +29,7 @@ function App() {
 
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/register" element={<Register />} />
-
-        <Route
-          path="/login"
-          element={
-            <PlaceholderPage
-              title="Login"
-              text="This is the temporary login page route."
-            />
-          }
-        />
+        <Route path="/login" element={<Login />} />
 
         <Route
           path="/register/teacher"
