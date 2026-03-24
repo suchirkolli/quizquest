@@ -6,9 +6,13 @@ function login() {
             <div className="welcome-page-wrapper">
             <div className="welcome-panel">
             <h1> Login </h1>
-            <input type="text" name = "username" id="username" placeholder = "username"/>
+            <label>Username: </label>
+            <input type="text" name = "username" placeholder = "username"/>
             <p>                                </p>
-            <input type="text" name = "password" id="password" placeholder = "password"/>
+            <label>Password: </label>
+            <input type="text" name = "password" placeholder = "password"/>
+            <p> </p> 
+            <label> error message here if login is incorrect in some way, shape, or form</label>
             </div>
             </div>
         </form>
