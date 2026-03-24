@@ -214,3 +214,236 @@
     font-size: 18px;
   }
 }
+
+/* ============================================
+   ADMIN QUEST CREATION PAGE
+   ============================================ */
+
+.quest-creation-page {
+  padding: 32px;
+}
+
+.quest-creation-max-width {
+  max-width: 896px;
+  margin: 0 auto;
+}
+
+/* Header: "Question Creation" title + Dashboard/Logout buttons */
+.quest-creation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.quest-creation-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #f0d58a;
+  margin: 0;
+  text-shadow: 2px 2px 0 #000000;
+}
+
+.quest-creation-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+/* Gold button — used for header and form action buttons */
+.qc-gold-button {
+  background-color: #5b4024;
+  border: 2px solid #b39146;
+  color: #f7e6b0;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: inset 1px 1px 0 #7c5a33;
+  transition: background-color 0.2s ease;
+}
+
+.qc-gold-button:hover {
+  background-color: #6a4a29;
+}
+
+.quest-header-btn {
+  padding: 8px 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+/* Main double-border parchment container */
+.parchment-container {
+  background-color: rgba(38, 26, 15, 0.96);
+  border: 5px solid #8f6c2d;
+  box-shadow:
+    0 0 0 4px #24180f,
+    0 0 0 8px #c7a557,
+    6px 6px 0 #120b06;
+  padding: 40px;
+}
+
+/* Centered "Build Your Quest" intro section */
+.quest-creation-intro {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.quest-creation-build-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #f3dfaa;
+  margin: 0 0 8px 0;
+  text-shadow: 2px 2px 0 #000000;
+}
+
+.quest-creation-subtitle {
+  font-size: 16px;
+  font-style: italic;
+  color: #d3bb7b;
+  margin: 0;
+}
+
+/* Quest title field area */
+.quest-title-section {
+  margin-bottom: 48px;
+}
+
+.quest-title-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 448px;
+}
+
+/* Gold uppercase label (used for Quest Title and Explanation) */
+.quest-field-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #f0d58a;
+  display: block;
+}
+
+/* Dark styled input and textarea fields */
+.qc-input-field {
+  background-color: #2f2216;
+  border: 2px solid #8f6c2d;
+  color: #f5ead0;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 16px;
+  border-radius: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.qc-input-field:focus {
+  outline: none;
+  border-color: #c7a557;
+  box-shadow: 0 0 6px rgba(199, 165, 87, 0.4);
+}
+
+.qc-input-field::placeholder {
+  color: #7c6040;
+}
+
+/* Individual question block with dashed separator */
+.question-block {
+  border-bottom: 2px dashed #8f6c2d;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+}
+
+.question-block:last-child {
+  border-bottom: none;
+}
+
+.question-block-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #f3dfaa;
+  margin: 0 0 16px 0;
+  text-shadow: 1px 1px 0 #000000;
+}
+
+.question-block-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.question-prompt-input {
+  width: 100%;
+}
+
+/* 2x2 grid for the 4 answer options */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Each option: radio button + text input side by side */
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-radio {
+  accent-color: #f0d58a;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.option-text-input {
+  flex: 1;
+  width: 0; /* allows flex to control width */
+}
+
+/* Explanation textarea section */
+.explanation-section {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.explanation-textarea {
+  resize: vertical;
+}
+
+/* Bottom action buttons row */
+.quest-form-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.quest-action-btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* "Forge Quest" button — filled gold variant */
+.forge-button {
+  background: linear-gradient(to bottom, #dbc47a, #a98435);
+  border-color: #f5e2a0;
+  color: #1f1408;
+  box-shadow: 2px 2px 0 #000000;
+}
+
+.forge-button:hover {
+  filter: brightness(1.08);
+  background: linear-gradient(to bottom, #dbc47a, #a98435);
+  color: #1f1408;
+}
