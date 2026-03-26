@@ -1,23 +1,45 @@
+import { Link } from 'react-router-dom';
 
-// reusing some of the assets from App.css
-function login() {
-    return (
-        <form>
-            <div className="welcome-page-wrapper">
-            <div className="welcome-panel">
-            <h1> Login </h1>
-            <label>Username: </label>
-            <input type="text" name = "username" placeholder = "username"/>
-            <p>                                </p>
-            <label>Password: </label>
-            <input type="text" name = "password" placeholder = "password"/>
-            <p> </p> 
-            <label> error message here if login is incorrect in some way, shape, or form</label>
-            </div>
-            </div>
-        </form>
-        
+function Login() {
+  return (
+    <form>
+      <div className="wrap">
+        <div className="panel small-panel form-text">
+          <h1 className="title">Login</h1>
 
-    );
+          <p className="text">
+            Enter your username and password to continue.
+          </p>
+
+          <label>Username: </label>
+          <input type="text" name="username" placeholder="username" />
+
+          <p></p>
+
+          <label>Password: </label>
+          <input type="text" name="password" placeholder="password" />
+
+          <p></p>
+
+          <p className="error">
+            error message here if login is incorrect in some way, shape, or form
+          </p>
+
+          <div className="buttons">
+            <button className="button" type="button">
+              Log In
+            </button>
+          </div>
+
+          <p>
+            <Link className="form-link" to="/register">
+              Need a new account?
+            </Link>
+          </p>
+        </div>
+      </div>
+    </form>
+  );
 }
-export default login;
+
+export default Login;

@@ -5,7 +5,7 @@
   color: #f4e7c4;
 }
 
-.main-nav-bar {
+.bar {
   background-color: #3a2817;
   border-bottom: 4px solid #9c7a32;
   padding: 16px 24px;
@@ -15,7 +15,7 @@
   box-shadow: 0 2px 0 #1a120b;
 }
 
-.main-nav-title {
+.brand {
   color: #f0d58a;
   font-size: 30px;
   font-weight: bold;
@@ -23,13 +23,13 @@
   text-shadow: 2px 2px 0 #000000;
 }
 
-.main-nav-links {
+.links {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.main-nav-links a {
+.links a {
   color: #f7e6b0;
   text-decoration: none;
   background-color: #5b4024;
@@ -38,12 +38,11 @@
   box-shadow: inset 1px 1px 0 #7c5a33;
 }
 
-.main-nav-links a:hover {
+.links a:hover {
   background-color: #6a4a29;
 }
 
-.welcome-page-wrapper,
-.register-role-page-wrapper {
+.wrap {
   min-height: calc(100vh - 78px);
   display: flex;
   justify-content: center;
@@ -51,8 +50,7 @@
   padding: 40px 16px;
 }
 
-.welcome-panel,
-.register-role-panel {
+.panel {
   width: 100%;
   max-width: 980px;
   background-color: rgba(38, 26, 15, 0.96);
@@ -65,14 +63,17 @@
   text-align: center;
 }
 
-.welcome-top-text {
+.small-panel {
+  max-width: 700px;
+}
+
+.small {
   color: #d3bb7b;
   font-size: 18px;
   margin-bottom: 16px;
 }
 
-.welcome-main-title,
-.register-role-title {
+.title {
   color: #f3dfaa;
   font-size: 42px;
   margin-top: 0;
@@ -80,20 +81,14 @@
   text-shadow: 2px 2px 0 #000000;
 }
 
-.register-role-subtitle {
-  color: #f5ead0;
-  font-size: 20px;
-  margin-bottom: 30px;
-}
-
-.welcome-description {
+.text {
   color: #f5ead0;
   font-size: 20px;
   line-height: 1.6;
   margin-bottom: 18px;
 }
 
-.welcome-button-area {
+.buttons {
   margin-top: 28px;
   display: flex;
   justify-content: center;
@@ -101,7 +96,7 @@
   flex-wrap: wrap;
 }
 
-.quest-link-button {
+.button {
   display: inline-block;
   text-decoration: none;
   color: #1f1408;
@@ -111,13 +106,15 @@
   border: 3px solid #f5e2a0;
   padding: 12px 22px;
   box-shadow: 2px 2px 0 #000000;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-.quest-link-button:hover {
+.button:hover {
   filter: brightness(1.08);
 }
 
-.welcome-small-box {
+.box {
   margin: 30px auto 0 auto;
   max-width: 500px;
   background-color: #3d2c1d;
@@ -126,36 +123,32 @@
   color: #f4e7c4;
 }
 
-.welcome-small-box-title {
+.box-title {
   color: #ead28c;
   font-weight: bold;
   margin-top: 0;
   margin-bottom: 10px;
 }
 
-.register-role-card-grid {
+.grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-top: 20px;
 }
 
-.register-role-card {
+.card {
   background-color: #2f2216;
   border: 3px solid #8f6c2d;
   box-shadow: 3px 3px 0 #140d08;
   overflow: hidden;
 }
 
-.teacher-card {
-  border-color: #9c7a32;
-}
-
-.student-card {
+.green {
   border-color: #5f8f4a;
 }
 
-.register-role-card-header {
+.card-top {
   background-color: #4e3720;
   color: #f3dfaa;
   font-size: 30px;
@@ -164,16 +157,16 @@
   text-shadow: 2px 2px 0 #000000;
 }
 
-.student-card .register-role-card-header {
+.green .card-top {
   background-color: #355a2e;
 }
 
-.register-role-card-body {
+.card-body {
   padding: 26px 22px 28px 22px;
   color: #f5ead0;
 }
 
-.register-role-big-text {
+.card-text {
   font-size: 22px;
   line-height: 1.5;
   margin-top: 0;
@@ -181,7 +174,7 @@
   font-weight: bold;
 }
 
-.register-role-list {
+.list {
   text-align: left;
   max-width: 320px;
   margin: 0 auto 28px auto;
@@ -189,30 +182,43 @@
   line-height: 1.7;
 }
 
-.register-role-button-area {
-  margin-top: 16px;
+.row {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.error {
+  color: #ffb6b6;
+  font-size: 17px;
+  min-height: 24px;
 }
 
 @media (max-width: 800px) {
-  .main-nav-bar {
+  .bar {
     flex-direction: column;
     gap: 12px;
   }
 
-  .register-role-card-grid {
+  .grid {
     grid-template-columns: 1fr;
   }
 
-  .welcome-main-title,
-  .register-role-title {
+  .title {
     font-size: 30px;
   }
 
-  .welcome-description,
-  .register-role-subtitle,
-  .register-role-big-text {
+  .text,
+  .card-text {
     font-size: 18px;
   }
+}
+
+.form-text {
+  color: #f5ead0;
+}
+
+.form-link {
+  color: #f0d58a;
 }
 
 /* ============================================

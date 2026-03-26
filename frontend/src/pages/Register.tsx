@@ -2,53 +2,51 @@ import { Link } from 'react-router-dom';
 
 function Register() {
   return (
-    <div className="register-role-page-wrapper">
-      <div className="register-role-panel">
-        <h1 className="register-role-title">Choose Your Role</h1>
+    <div className="wrap">
+      <div className="panel">
+        <h1 className="title">Choose Your Role</h1>
 
-        <p className="register-role-subtitle">
-          Select how you want to use Quiz Quest.
-        </p>
+        <p className="text">Select how you want to use Quiz Quest.</p>
 
-        <div className="register-role-card-grid">
-          <div className="register-role-card teacher-card">
-            <div className="register-role-card-header">Teacher</div>
+        <div className="grid">
+          <div className="card">
+            <div className="card-top">Teacher</div>
 
-            <div className="register-role-card-body">
-              <p className="register-role-big-text">
+            <div className="card-body">
+              <p className="card-text">
                 Build quiz runs, manage content, and review results.
               </p>
 
-              <ul className="register-role-list">
+              <ul className="list">
                 <li>Create quiz-based quest content</li>
                 <li>Set up runs for students to complete</li>
                 <li>Review performance and results later</li>
               </ul>
 
-              <div className="register-role-button-area">
-                <Link className="quest-link-button" to="/register/teacher">
+              <div className="buttons">
+                <Link className="button" to="/register/teacher">
                   Embark as Teacher
                 </Link>
               </div>
             </div>
           </div>
 
-          <div className="register-role-card student-card">
-            <div className="register-role-card-header">Student</div>
+          <div className="card green">
+            <div className="card-top">Student</div>
 
-            <div className="register-role-card-body">
-              <p className="register-role-big-text">
+            <div className="card-body">
+              <p className="card-text">
                 Play through quest runs and answer quiz questions.
               </p>
 
-              <ul className="register-role-list">
+              <ul className="list">
                 <li>Join interactive study adventures</li>
                 <li>Complete quiz runs and answer questions</li>
                 <li>Track progress as more features are added</li>
               </ul>
 
-              <div className="register-role-button-area">
-                <Link className="quest-link-button" to="/register/student">
+              <div className="buttons">
+                <Link className="button" to="/register/student">
                   Embark as Student
                 </Link>
               </div>
@@ -56,9 +54,9 @@ function Register() {
           </div>
         </div>
 
-        <div className="welcome-small-box">
-          <p className="welcome-small-box-title">Another box</p>
-          <p>idk what to put here yet probably more directions its  a nice box tho</p>
+        <div className="box">
+          <p className="box-title">Another box</p>
+          <p>idk what to put here yet probably more directions its a nice box tho</p>
         </div>
       </div>
     </div>

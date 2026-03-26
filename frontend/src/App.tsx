@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/NavBar';
 import Register from './pages/Register';
@@ -6,42 +6,40 @@ import Welcome from './pages/Welcome';
 import Login from './pages/Login';
 import AdminQuestCreation from './pages/AdminQuestCreation';
 
-type PlaceholderPageProps = {
+type TempProps = {
   title: string;
   text: string;
 };
 
-function PlaceholderPage({ title, text }: PlaceholderPageProps) {
+function TempPage({ title, text }: TempProps) {
   return (
-    <div className="page-placeholder">
-      <h1>{title}</h1>
-      <p>{text}</p>
+    <div className="wrap">
+      <div className="panel small-panel">
+        <h1 className="title">{title}</h1>
+        <p className="text">{text}</p>
+      </div>
     </div>
   );
 }
 
 function App() {
-  const location = useLocation();
-  const isAdminPage = location.pathname.startsWith('/admin');
-
   return (
     <div>
-      {!isAdminPage && <NavBar />}
+      <NavBar />
 
       <Routes>
         <Route path="/" element={<Navigate to="/welcome" replace />} />
-
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/admin/create-quest" element={<AdminQuestCreation />} />
 
         <Route
           path="/register/teacher"
           element={
-            <PlaceholderPage
+            <TempPage
               title="Teacher Registration"
-              text="This is the temporary teacher registration route."
+              text="This page will be built in the next phase."
             />
           }
         />
@@ -49,9 +47,9 @@ function App() {
         <Route
           path="/register/student"
           element={
-            <PlaceholderPage
+            <TempPage
               title="Student Registration"
-              text="This is the temporary student registration route."
+              text="This page will be built in the next phase."
             />
           }
         />
