@@ -1,9 +1,10 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/NavBar';
 import Register from './pages/Register';
 import Welcome from './pages/Welcome';
 import Login from './pages/Login';
+import AdminQuestCreation from './pages/AdminQuestCreation';
 
 type PlaceholderPageProps = {
   title: string;
@@ -20,9 +21,12 @@ function PlaceholderPage({ title, text }: PlaceholderPageProps) {
 }
 
 function App() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+
   return (
     <div>
-      <NavBar />
+      {!isAdminPage && <NavBar />}
 
       <Routes>
         <Route path="/" element={<Navigate to="/welcome" replace />} />
@@ -30,6 +34,7 @@ function App() {
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin/create-quest" element={<AdminQuestCreation />} />
 
         <Route
           path="/register/teacher"
