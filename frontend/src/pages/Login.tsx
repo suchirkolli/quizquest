@@ -1,8 +1,54 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const firstMessage =
+    (location.state as { message?: string } | null)?.message || '';
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState(firstMessage);
+
+  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (username.trim() === '' || password.trim() === '') {
+      setMessage('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username.trim(),
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message || 'Invalid username or password.');
+        return;
+      }
+
+      localStorage.setItem('token', data.token);
+      setMessage('');
+      navigate('/welcome');
+    } catch {
+      setMessage('Could not connect to the server.');
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={handleLogin}>
       <div className="wrap">
         <div className="panel small-panel form-text">
           <h1 className="title">Login</h1>
@@ -12,21 +58,31 @@ function Login() {
           </p>
 
           <label>Username: </label>
-          <input type="text" name="username" placeholder="username" />
+          <input
+            type="text"
+            name="username"
+            placeholder="username"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+          />
 
           <p></p>
 
           <label>Password: </label>
-          <input type="text" name="password" placeholder="password" />
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
 
           <p></p>
 
-          <p className="error">
-            error message here if login is incorrect in some way, shape, or form
-          </p>
+          <p className="error">{message}</p>
 
           <div className="buttons">
-            <button className="button" type="button">
+            <button className="button" type="submit">
               Log In
             </button>
           </div>
