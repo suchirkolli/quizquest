@@ -21,6 +21,8 @@ function AdminQuestCreation() {
   // State: the list of questions — starts with one blank question
   const [questions, setQuestions] = useState<Question[]>([blankQuestion()]);
 
+  const [message, setMessage] = useState('');
+
   // Adds a new blank question to the bottom of the list
   function handleAddQuestion() {
     setQuestions([...questions, blankQuestion()]);
@@ -34,11 +36,41 @@ function AdminQuestCreation() {
   }
 
   // Called when the form is submitted
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); // prevents page reload (default browser behavior)
-    const quest: Quest = { title, questions };
-    console.log('Quest to save:', quest); // placeholder until backend is ready
+  async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+
+  const quest: Quest = { title, questions };
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    setMessage('You must be logged in as a teacher.');
+    return;
   }
+
+  try {
+    const response = await fetch('http://localhost:3000/api/quests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(quest),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setMessage(data.message || 'Could not save quest.');
+      return;
+    }
+
+    setMessage('Quest saved successfully.');
+    setTitle('');
+    setQuestions([blankQuestion()]);
+  } catch {
+    setMessage('Could not connect to the server.');
+  }
+}
 
   return (
     <div className="quest-creation-page">
@@ -143,6 +175,7 @@ function AdminQuestCreation() {
             </div>
 
             {/* Bottom action buttons */}
+            {message && <p className="form-message">{message}</p>}
             <div className="quest-form-actions">
               <button type="button" className="qc-gold-button quest-action-btn" onClick={handleAddQuestion}>
                 + Add Another Question
