@@ -34,3 +34,19 @@ export const requireAuth = (
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
+
+export const requireTeacher = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (req.user.role !== "TEACHER") {
+    return res.status(403).json({ message: "Teacher access required" });
+  }
+
+  next();
+};
