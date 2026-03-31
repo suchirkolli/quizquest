@@ -17,4 +17,30 @@ model User {
   passwordHash String
   role         UserRole
   createdAt    DateTime @default(now())
+
+  quests       Quest[]
+}
+
+model Quest {
+  id        Int        @id @default(autoincrement())
+  title     String
+  ownerId   Int
+  createdAt DateTime   @default(now())
+
+  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  questions Question[]
+}
+
+model Question {
+  id           Int    @id @default(autoincrement())
+  questId      Int
+  prompt       String
+  choiceA      String
+  choiceB      String
+  choiceC      String
+  choiceD      String
+  correctIndex Int
+  explanation  String
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
 }
