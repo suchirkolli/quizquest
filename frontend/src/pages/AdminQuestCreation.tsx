@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import type { Quest, Question } from '../types/Quest';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { Question } from '../types/Quest';
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
@@ -14,6 +14,8 @@ const blankQuestion = (): Question => ({
 
 function AdminQuestCreation() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id?: string }>();
+  const isEditMode = Boolean(id);
 
   // State: the quest title
   const [title, setTitle] = useState('');
@@ -22,6 +24,50 @@ function AdminQuestCreation() {
   const [questions, setQuestions] = useState<Question[]>([blankQuestion()]);
 
   const [message, setMessage] = useState('');
+
+  // When editing, load the existing quest data and pre-fill the form
+  useEffect(() => {
+    if (!isEditMode) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    fetch('http://localhost:3000/api/quests/mine', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const quest = data.quests?.find(
+          (q: { id: number }) => q.id === Number(id)
+        );
+        if (!quest) {
+          setMessage('Quest not found.');
+          return;
+        }
+        setTitle(quest.title);
+        // Convert from backend column format (choiceA/B/C/D) back to the choices array
+        setQuestions(
+          quest.questions.map((q: {
+            prompt: string;
+            choiceA: string;
+            choiceB: string;
+            choiceC: string;
+            choiceD: string;
+            correctIndex: 0 | 1 | 2 | 3;
+            explanation: string;
+          }) => ({
+            prompt: q.prompt,
+            choices: [q.choiceA, q.choiceB, q.choiceC, q.choiceD] as [string, string, string, string],
+            correctIndex: q.correctIndex,
+            explanation: q.explanation,
+          }))
+        );
+      })
+      .catch(() => setMessage('Could not load quest data.'));
+  }, [id, isEditMode, navigate]);
 
   // Adds a new blank question to the bottom of the list
   function handleAddQuestion() {
@@ -37,40 +83,43 @@ function AdminQuestCreation() {
 
   // Called when the form is submitted
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const quest: Quest = { title, questions };
-  const token = localStorage.getItem('token');
+    const quest = { title, questions };
+    const token = localStorage.getItem('token');
 
-  if (!token) {
-    setMessage('You must be logged in as a teacher.');
-    return;
-  }
-
-  try {
-    const response = await fetch('http://localhost:3000/api/quests', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(quest),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setMessage(data.message || 'Could not save quest.');
+    if (!token) {
+      setMessage('You must be logged in as a teacher.');
       return;
     }
 
-    setMessage('Quest saved successfully.');
-    setTitle('');
-    setQuestions([blankQuestion()]);
-  } catch {
-    setMessage('Could not connect to the server.');
+    const url = isEditMode
+      ? `http://localhost:3000/api/quests/${id}`
+      : 'http://localhost:3000/api/quests';
+    const method = isEditMode ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(quest),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message || 'Could not save quest.');
+        return;
+      }
+
+      navigate('/dashboard');
+    } catch {
+      setMessage('Could not connect to the server.');
+    }
   }
-}
 
   return (
     <div className="quest-creation-page">
@@ -78,10 +127,10 @@ function AdminQuestCreation() {
 
         {/* Page header: title on left, nav buttons on right */}
         <div className="quest-creation-header">
-          <h1 className="quest-creation-title">Question Creation</h1>
+          <h1 className="quest-creation-title">{isEditMode ? 'Edit Quest' : 'Question Creation'}</h1>
           <div className="quest-creation-header-actions">
-            <button type="button" className="qc-gold-button quest-header-btn">Dashboard</button>
-            <button type="button" className="qc-gold-button quest-header-btn" onClick={() => navigate('/welcome')}>Logout</button>
+            <button type="button" className="qc-gold-button quest-header-btn" onClick={() => navigate('/dashboard')}>Dashboard</button>
+            <button type="button" className="qc-gold-button quest-header-btn" onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigate('/welcome'); }}>Logout</button>
           </div>
         </div>
 
@@ -90,7 +139,7 @@ function AdminQuestCreation() {
 
           {/* Centered intro section */}
           <div className="quest-creation-intro">
-            <h2 className="quest-creation-build-title">Build Your Quest</h2>
+            <h2 className="quest-creation-build-title">{isEditMode ? 'Edit Your Quest' : 'Build Your Quest'}</h2>
             <p className="quest-creation-subtitle">Establish the challenge for your students</p>
           </div>
 
@@ -181,7 +230,7 @@ function AdminQuestCreation() {
                 + Add Another Question
               </button>
               <button type="submit" className="qc-gold-button quest-action-btn forge-button">
-                Forge Quest (Save)
+                {isEditMode ? 'Save Changes' : 'Forge Quest (Save)'}
               </button>
             </div>
 
