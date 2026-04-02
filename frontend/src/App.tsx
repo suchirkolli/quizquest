@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import AdminQuestCreation from './pages/AdminQuestCreation';
 import TeacherRegister from './pages/TeacherRegister';
 import StudentRegister from './pages/StudentRegister';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin/create-quest" element={<AdminQuestCreation />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin/create-quest/:id?" element={<AdminQuestCreation />} />
 
         <Route path="/register/teacher" element={<TeacherRegister />} />
         <Route path="/register/student" element={<StudentRegister />} />
