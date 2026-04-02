@@ -40,8 +40,9 @@ function Login() {
       }
 
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       setMessage('');
-      navigate('/welcome');
+      navigate('/dashboard');
     } catch {
       setMessage('Could not connect to the server.');
     }
