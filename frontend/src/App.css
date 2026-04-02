@@ -453,3 +453,252 @@
   background: linear-gradient(to bottom, #dbc47a, #a98435);
   color: #1f1408;
 }
+
+/* ============================================
+   NAVBAR LOGOUT BUTTON
+   ============================================ */
+
+.nav-logout-btn {
+  color: #f7e6b0;
+  text-decoration: none;
+  background-color: #5b4024;
+  border: 2px solid #b39146;
+  padding: 8px 14px;
+  box-shadow: inset 1px 1px 0 #7c5a33;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.nav-logout-btn:hover {
+  background-color: #6a4a29;
+}
+
+/* ============================================
+   DASHBOARD PAGE (TEACHER + STUDENT)
+   ============================================ */
+
+.dashboard-page {
+  padding: 32px;
+}
+
+.dashboard-max-width {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+/* Header row: title left, logout right */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.dashboard-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #f0d58a;
+  margin: 0;
+  text-shadow: 2px 2px 0 #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dashboard-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+/* Intro section inside parchment */
+.dashboard-intro {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* Stats bar */
+.dashboard-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #d3bb7b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dashboard-stats-bar strong {
+  color: #f3dfaa;
+}
+
+.dashboard-stats-divider {
+  color: #8f6c2d;
+}
+
+/* Two-column layout for teacher dashboard */
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 24px;
+}
+
+/* Dashboard card (left panel: quest creation hub) */
+.dashboard-card {
+  background-color: #2f2216;
+  border: 3px solid #8f6c2d;
+  box-shadow: 3px 3px 0 #140d08;
+  overflow: hidden;
+}
+
+.dashboard-card-header {
+  background-color: #4e3720;
+  color: #f3dfaa;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 14px 18px;
+  text-shadow: 1px 1px 0 #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid #8f6c2d;
+}
+
+.dashboard-card-body {
+  padding: 24px 20px;
+  color: #f5ead0;
+}
+
+.dashboard-card-desc {
+  font-size: 15px;
+  color: #d3bb7b;
+  margin-top: 0;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.dashboard-create-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+/* Quest management table */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #f5ead0;
+}
+
+.dashboard-table th {
+  text-align: left;
+  color: #d3bb7b;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 8px 10px 8px;
+  border-bottom: 2px solid #8f6c2d;
+}
+
+.dashboard-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #3a2817;
+  vertical-align: middle;
+}
+
+.dashboard-table tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dashboard-action-btn {
+  padding: 5px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dashboard-delete-btn {
+  padding: 5px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  cursor: pointer;
+  border-color: #8f3d3d;
+  color: #ffb6b6;
+}
+
+.dashboard-delete-btn:hover {
+  background-color: #5a2020;
+}
+
+/* Student quest list */
+.student-quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.student-quest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 8px;
+  border-bottom: 1px solid #3a2817;
+  gap: 16px;
+}
+
+.student-quest-row:last-child {
+  border-bottom: none;
+}
+
+.student-quest-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.student-quest-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f3dfaa;
+}
+
+.student-quest-meta {
+  font-size: 13px;
+  color: #d3bb7b;
+}
+
+.student-quest-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 800px) {
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .student-quest-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-stats-bar {
+    justify-content: flex-start;
+  }
+}
