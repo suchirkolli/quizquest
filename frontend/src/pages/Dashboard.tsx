@@ -128,7 +128,7 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
           {/* Intro */}
           <div className="dashboard-intro">
             <h2 className="quest-creation-build-title">Welcome, {user.username}</h2>
-            <p className="quest-creation-subtitle">Master of Trials — establish your Academic Empire</p>
+            
           </div>
 
           {/* Stats bar */}
@@ -143,7 +143,7 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
 
             {/* Left: Quest Creation Hub */}
             <div className="dashboard-card">
-              <div className="dashboard-card-header">Quest Creation Hub</div>
+              <div className="dashboard-card-header">Quest Creation</div>
               <div className="dashboard-card-body">
                 <p className="dashboard-card-desc">
                   Design new trials for your students. Each quest is a unique interactive run.
