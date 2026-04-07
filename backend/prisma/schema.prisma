@@ -12,13 +12,14 @@ enum UserRole {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  username     String   @unique
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
   passwordHash String
   role         UserRole
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
 
   quests       Quest[]
+  attempts     Attempt[]
 }
 
 model Quest {
@@ -29,6 +30,7 @@ model Quest {
 
   owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   questions Question[]
+  attempts  Attempt[]
 }
 
 model Question {
@@ -43,4 +45,29 @@ model Question {
   explanation  String
 
   quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  answers AttemptAnswer[]
+}
+
+model Attempt {
+  id           Int           @id @default(autoincrement())
+  studentId    Int
+  questId      Int
+  score        Int
+  totalQuestions Int
+  createdAt    DateTime      @default(now())
+
+  student      User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  quest        Quest         @relation(fields: [questId], references: [id], onDelete: Cascade)
+  answers      AttemptAnswer[]
+}
+
+model AttemptAnswer {
+  id            Int      @id @default(autoincrement())
+  attemptId      Int
+  questionId     Int
+  selectedIndex  Int
+  isCorrect      Boolean
+
+  attempt        Attempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question       Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
