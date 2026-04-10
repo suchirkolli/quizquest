@@ -19,6 +19,23 @@ interface StoredUser {
   role: 'TEACHER' | 'STUDENT';
 }
 
+interface ResultAnswer {
+  questionId: number;
+  prompt: string;
+  selectedIndex: number | null;
+  correctIndex: number;
+  isCorrect: boolean;
+  explanation: string;
+}
+
+interface SubmitResult {
+  attemptId: number;
+  questId: number;
+  score: number;
+  totalQuestions: number;
+  answers: ResultAnswer[];
+}
+
 function RunningQuest() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -29,7 +46,9 @@ function RunningQuest() {
   const [quest, setQuest] = useState<RunQuestData | null>(null);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const [result, setResult] = useState<SubmitResult | null>(null);
 
   useEffect(() => {
     if (!token || !rawUser) {
@@ -88,6 +107,82 @@ function RunningQuest() {
     navigate('/dashboard');
   }
 
+  function getChoiceText(questionId: number, choiceIndex: number | null) {
+    if (!quest) {
+      return '';
+    }
+
+    const foundQuestion = quest.questions.find((question) => question.id === questionId);
+
+    if (!foundQuestion) {
+      return '';
+    }
+
+    if (choiceIndex === null) {
+      return 'No answer selected';
+    }
+
+    return foundQuestion.choices[choiceIndex] || '';
+  }
+
+  async function handleSubmitRun() {
+    if (!quest || !id) {
+      return;
+    }
+
+    if (Object.keys(answers).length < quest.questions.length) {
+      setMessage('Please answer every question before submitting.');
+      return;
+    }
+
+    const submitAnswers: { questionId: number; selectedIndex: number }[] = [];
+
+    for (let i = 0; i < quest.questions.length; i++) {
+      const question = quest.questions[i];
+      const selectedIndex = answers[question.id];
+
+      if (selectedIndex === undefined) {
+        setMessage('Please answer every question before submitting.');
+        return;
+      }
+
+      submitAnswers.push({
+        questionId: question.id,
+        selectedIndex: selectedIndex,
+      });
+    }
+
+    setSubmitting(true);
+    setMessage('');
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/play/quests/${id}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          answers: submitAnswers,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message || 'Could not submit quest.');
+        return;
+      }
+
+      setResult(data.result);
+      setMessage(data.message || 'Quest submitted successfully.');
+    } catch {
+      setMessage('Could not connect to the server.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="dashboard-page">
@@ -103,7 +198,7 @@ function RunningQuest() {
     );
   }
 
-  if (message !== '') {
+  if (message !== '' && !quest && !result) {
     return (
       <div className="dashboard-page">
         <div className="dashboard-max-width">
@@ -132,7 +227,9 @@ function RunningQuest() {
     <div className="quest-creation-page">
       <div className="quest-creation-max-width">
         <div className="quest-creation-header">
-          <h1 className="quest-creation-title">Run Quest</h1>
+          <h1 className="quest-creation-title">
+            {result ? 'Quest Result' : 'Run Quest'}
+          </h1>
 
           <div className="quest-creation-header-actions">
             <button
@@ -148,82 +245,186 @@ function RunningQuest() {
         <div className="parchment-container">
           <div className="quest-creation-intro">
             <h2 className="quest-creation-build-title">{quest.title}</h2>
-            <p className="quest-creation-subtitle">
-              Answer each question below. Submission comes in the next phase.
+
+            {!result && (
+              <p className="quest-creation-subtitle">
+                Answer each question below, then submit your run.
+              </p>
+            )}
+
+            {result && (
+              <p className="quest-creation-subtitle">
+                Your run is complete. Review your answers below.
+              </p>
+            )}
+          </div>
+
+          {message !== '' && (
+            <p
+              className={result ? 'quest-creation-subtitle' : 'error'}
+              style={{ textAlign: 'center' }}
+            >
+              {message}
             </p>
-          </div>
+          )}
 
-          <div className="dashboard-stats-bar">
-            <span>
-              Questions: <strong>{quest.questions.length}</strong>
-            </span>
-            <span className="dashboard-stats-divider">|</span>
-            <span>
-              Answered: <strong>{Object.keys(answers).length}</strong>
-            </span>
-          </div>
+          {!result && (
+            <>
+              <div className="dashboard-stats-bar">
+                <span>
+                  Questions: <strong>{quest.questions.length}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Answered: <strong>{Object.keys(answers).length}</strong>
+                </span>
+              </div>
 
-          {quest.questions.map((question, questionIndex) => (
-            <div key={question.id} className="question-block">
-              <h3 className="question-block-title">
-                Question {questionIndex + 1}
-              </h3>
+              {quest.questions.map((question, questionIndex) => (
+                <div key={question.id} className="question-block">
+                  <h3 className="question-block-title">
+                    Question {questionIndex + 1}
+                  </h3>
 
-              <div className="question-block-fields">
-                <div className="row">
-                  <label className="quest-field-label">Prompt</label>
-                  <div className="qc-input-field">{question.prompt}</div>
-                </div>
+                  <div className="question-block-fields">
+                    <div className="row">
+                      <label className="quest-field-label">Prompt</label>
+                      <div className="qc-input-field">{question.prompt}</div>
+                    </div>
 
-                <div className="row">
-                  <label className="quest-field-label">Choices</label>
+                    <div className="row">
+                      <label className="quest-field-label">Choices</label>
 
-                  <div className="options-grid">
-                    {question.choices.map((choice, choiceIndex) => (
-                      <label key={choiceIndex} className="option-row">
-                        <input
-                          className="option-radio"
-                          type="radio"
-                          name={`question-${question.id}`}
-                          checked={answers[question.id] === choiceIndex}
-                          onChange={() =>
-                            handleChoiceChange(question.id, choiceIndex)
-                          }
-                        />
-                        <div className="qc-input-field option-text-input">
-                          {choice}
-                        </div>
-                      </label>
-                    ))}
+                      <div className="options-grid">
+                        {question.choices.map((choice, choiceIndex) => (
+                          <label key={choiceIndex} className="option-row">
+                            <input
+                              className="option-radio"
+                              type="radio"
+                              name={`question-${question.id}`}
+                              checked={answers[question.id] === choiceIndex}
+                              onChange={() =>
+                                handleChoiceChange(question.id, choiceIndex)
+                              }
+                            />
+                            <div className="qc-input-field option-text-input">
+                              {choice}
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
+              ))}
+
+              <div className="quest-form-actions">
+                <button
+                  type="button"
+                  className="qc-gold-button quest-action-btn"
+                  onClick={handleGoBack}
+                >
+                  Back to Dashboard
+                </button>
+
+                <button
+                  type="button"
+                  className="qc-gold-button forge-button quest-action-btn"
+                  onClick={handleSubmitRun}
+                  disabled={submitting}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Run'}
+                </button>
               </div>
-            </div>
-          ))}
+            </>
+          )}
 
-          <div className="quest-form-actions">
-            <button
-              type="button"
-              className="qc-gold-button quest-action-btn"
-              onClick={handleGoBack}
-            >
-              Back to Dashboard
-            </button>
+          {result && (
+            <>
+              <div className="dashboard-stats-bar">
+                <span>
+                  Score: <strong>{result.score}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Total: <strong>{result.totalQuestions}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Attempt Id: <strong>{result.attemptId}</strong>
+                </span>
+              </div>
 
-            <button type="button" className="qc-gold-button forge-button quest-action-btn">
-              Submit Run Next Phase
-            </button>
-          </div>
+              {result.answers.map((answer, index) => (
+                <div key={answer.questionId} className="question-block">
+                  <h3 className="question-block-title">
+                    Question {index + 1}
+                  </h3>
+
+                  <div className="question-block-fields">
+                    <div className="row">
+                      <label className="quest-field-label">Prompt</label>
+                      <div className="qc-input-field">{answer.prompt}</div>
+                    </div>
+
+                    <div className="row">
+                      <label className="quest-field-label">Your Answer</label>
+                      <div className="qc-input-field">
+                        {getChoiceText(answer.questionId, answer.selectedIndex)}
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <label className="quest-field-label">Correct Answer</label>
+                      <div className="qc-input-field">
+                        {getChoiceText(answer.questionId, answer.correctIndex)}
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <label className="quest-field-label">Result</label>
+                      <div className="qc-input-field">
+                        {answer.isCorrect ? 'Correct' : 'Incorrect'}
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <label className="quest-field-label">Explanation</label>
+                      <div className="qc-input-field">{answer.explanation}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="quest-form-actions">
+                <button
+                  type="button"
+                  className="qc-gold-button quest-action-btn"
+                  onClick={handleGoBack}
+                >
+                  Back to Dashboard
+                </button>
+
+                <button
+                  type="button"
+                  className="qc-gold-button forge-button quest-action-btn"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry This Page
+                </button>
+              </div>
+            </>
+          )}
 
           <div className="box">
-            <p className="box-title">Phase 1 Status</p>
+            <p className="box-title">Phase 3 Status</p>
             <p>
-              This page now loads a real quest and stores the selected answers
-              in the browser.
+              This page now loads a quest, lets the student answer it, submits
+              the answers to the backend, and shows the result on the same page.
             </p>
             <p>
-              In the next phase, we will send those answers to the backend and
-              show the score and explanations.
+              Next, we can add attempt history or simple abilities without
+              changing the backend structure.
             </p>
             <p>
               <Link className="form-link" to="/dashboard">
