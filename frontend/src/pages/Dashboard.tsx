@@ -249,6 +249,10 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
     navigate('/welcome');
   }
 
+  function handleStartRun(questId: number) {
+    navigate(`/quests/${questId}/run`);
+  }
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-max-width">
@@ -295,7 +299,7 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
                     <button
                       type="button"
                       className="qc-gold-button forge-button dashboard-action-btn"
-                      onClick={() => alert('Game coming soon!')}
+                      onClick={() => handleStartRun(quest.id)}
                     >
                       Start Run
                     </button>
