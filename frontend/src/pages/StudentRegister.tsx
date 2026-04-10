@@ -6,13 +6,35 @@ function StudentRegister() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
 
   async function handleRegister(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (username.trim() === '' || password.trim() === '') {
+    const cleanUsername = username.trim();
+
+    if (
+      cleanUsername === '' ||
+      password.trim() === '' ||
+      confirmPassword.trim() === ''
+    ) {
       setMessage('Please fill in all fields.');
+      return;
+    }
+
+    if (cleanUsername.length < 3 || cleanUsername.length > 30) {
+      setMessage('Username must be between 3 and 30 characters.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setMessage('Password must be at least 6 characters.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match.');
       return;
     }
 
@@ -23,7 +45,7 @@ function StudentRegister() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: username.trim(),
+          username: cleanUsername,
           password: password,
           role: 'STUDENT',
         }),
@@ -39,7 +61,7 @@ function StudentRegister() {
       setMessage('');
       navigate('/login', {
         state: {
-          message: 'Registration successful. Please log in.',
+          message: 'Student account created. Please log in.',
         },
       });
     } catch {
@@ -54,7 +76,7 @@ function StudentRegister() {
           <h1 className="title">Student Registration</h1>
 
           <p className="text">
-            Join interactive quiz adventures and track your progress.
+            Create a student account to enter quests and use the dashboard.
           </p>
 
           <label>Username: </label>
@@ -79,6 +101,17 @@ function StudentRegister() {
 
           <p></p>
 
+          <label>Confirm Password: </label>
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="confirm password"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+          />
+
+          <p></p>
+
           <p className="error">{message}</p>
 
           <div className="buttons">
@@ -92,6 +125,17 @@ function StudentRegister() {
               Choose a Different Role
             </Link>
           </p>
+
+          <div className="box">
+            <p className="box-title">Registration Rules</p>
+            <ul className="list">
+              <li>Username must be between 3 and 30 characters</li>
+              <li>Password must be at least 6 characters</li>
+              <li>Confirm password must match your password</li>
+              <li>Each student account must use a unique username</li>
+              <li>After registration, you will go to login</li>
+            </ul>
+          </div>
         </div>
       </div>
     </form>

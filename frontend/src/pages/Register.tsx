@@ -14,13 +14,13 @@ function Register() {
 
             <div className="card-body">
               <p className="card-text">
-                Build quiz runs, manage content, and review results.
+                Build quests, manage content, and review student results.
               </p>
 
               <ul className="list">
                 <li>Create quiz-based quest content</li>
-                <li>Set up runs for students to complete</li>
-                <li>Review performance and results later</li>
+                <li>Edit and manage your created quests</li>
+                <li>Use the dashboard to organize your work</li>
               </ul>
 
               <div className="buttons">
@@ -36,13 +36,13 @@ function Register() {
 
             <div className="card-body">
               <p className="card-text">
-                Play through quest runs and answer quiz questions.
+                Play quests, answer questions, and view available runs.
               </p>
 
               <ul className="list">
                 <li>Join interactive study adventures</li>
-                <li>Complete quiz runs and answer questions</li>
-                <li>Track progress as more features are added</li>
+                <li>Open your dashboard after login</li>
+                <li>Start teacher-made quests as more features are added</li>
               </ul>
 
               <div className="buttons">
@@ -55,8 +55,14 @@ function Register() {
         </div>
 
         <div className="box">
-          <p className="box-title">Another box</p>
-          <p>idk what to put here yet probably more directions its a nice box tho</p>
+          <p className="box-title">Registration Rules</p>
+          <ul className="list">
+            <li>Username must be between 3 and 30 characters</li>
+            <li>Password must be at least 6 characters</li>
+            <li>Confirm password must match your password</li>
+            <li>Each account must use a unique username</li>
+            <li>After registration, you will go to login and then open your dashboard</li>
+          </ul>
         </div>
       </div>
     </div>

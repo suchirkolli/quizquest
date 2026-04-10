@@ -55,7 +55,7 @@ function Login() {
           <h1 className="title">Login</h1>
 
           <p className="text">
-            Enter your username and password to continue.
+            Enter your username and password to open your dashboard.
           </p>
 
           <label>Username: </label>

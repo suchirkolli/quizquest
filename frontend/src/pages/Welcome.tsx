@@ -29,9 +29,10 @@ function Welcome() {
         </div>
 
         <div className="box">
-          <p className="box-title">Mock data:</p>
-          <p>username: gandalf</p>
-          <p>password: wizard101</p>
+          <p className="box-title">Getting Started</p>
+          <p>Teachers can register, log in, and manage quests from the dashboard.</p>
+          <p>Students can register, log in, and open the student dashboard.</p>
+          <p>After creating an account, go to login and sign in with your new username and password.</p>
         </div>
       </div>
     </div>
