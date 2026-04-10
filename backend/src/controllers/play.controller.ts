@@ -3,6 +3,10 @@ import { z } from "zod";
 import prisma from "../lib/prisma";
 import { AuthRequest } from "../middleware/auth.middleware";
 
+const checkQuestionSchema = z.object({
+  selectedIndex: z.number().int().min(0).max(3).nullable(),
+});
+
 const submitQuestSchema = z.object({
   answers: z.array(
     z.object({
@@ -11,6 +15,64 @@ const submitQuestSchema = z.object({
     })
   ),
 });
+
+export const checkQuestion = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (req.user.role !== "STUDENT") {
+      return res.status(403).json({ message: "Only students can play quests" });
+    }
+
+    const questId = Number(req.params.id);
+    const questionId = Number(req.params.questionId);
+
+    if (Number.isNaN(questId) || Number.isNaN(questionId)) {
+      return res.status(400).json({ message: "Invalid quest or question id" });
+    }
+
+    const parsed = checkQuestionSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        message: "Invalid question check data",
+        errors: parsed.error.flatten(),
+      });
+    }
+
+    const question = await prisma.question.findFirst({
+      where: {
+        id: questionId,
+        questId: questId,
+      },
+    });
+
+    if (!question) {
+      return res.status(404).json({ message: "Question not found for this quest" });
+    }
+
+    const selectedIndex = parsed.data.selectedIndex;
+
+    const isCorrect =
+      selectedIndex !== null && selectedIndex === question.correctIndex;
+
+    return res.status(200).json({
+      message: "Question checked successfully",
+      result: {
+        questionId: question.id,
+        selectedIndex: selectedIndex,
+        correctIndex: question.correctIndex,
+        isCorrect: isCorrect,
+        explanation: question.explanation,
+      },
+    });
+  } catch (error) {
+    console.error("CHECK QUESTION ERROR:", error);
+    return res.status(500).json({ message: "Server error while checking question" });
+  }
+};
 
 export const submitQuest = async (req: AuthRequest, res: Response) => {
   try {
