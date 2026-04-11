@@ -1,0 +1,11 @@
+/*Royalty Free Soundtracks
+Quest Soundtrack1: https://pixabay.com/music/lofi-lofi-chill-music-495628/
+Quest Soundtrack2: https://pixabay.com/music/lofi-lofi-lofi-music-499264/
+Begin Quest: https://pixabay.com/sound-effects/film-special-effects-game-start-6104/
+Quest Over (Loss): https://pixabay.com/sound-effects/musical-game-over-39-199830/
+Quest Over (Win): https://pixabay.com/sound-effects/film-special-effects-success-fanfare-trumpets-6185/
+Gain Powerup: https://pixabay.com/sound-effects/film-special-effects-cute-level-up-3-189853/
+Correct: https://pixabay.com/sound-effects/film-special-effects-correct-356013/
+Wrong: https://pixabay.com/sound-effects/film-special-effects-bulletimpact1-442717/
+Ouch: https://pixabay.com/sound-effects/film-special-effects-characterouch2-163912/
+ */
