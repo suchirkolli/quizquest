@@ -12,6 +12,7 @@ interface HealthBarHearts {
 export default function Healthbar({heart1, heart2, heart3}: HealthBarHearts) {
     const healthNumber = 3;
     return (<div>
+        // ngl this part auto filled so I'm just gonna roll with it bc it seems good (for now)
         <span>{heart1 ? '❤️' : 'X'}</span> // if true then heart, if false then X
         <span>{heart2 ? '❤️' : 'X'}</span>
         <span>{heart3 ? '❤️' : 'X'}</span>

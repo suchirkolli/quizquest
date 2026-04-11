@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {Click} from '../components/SoundEffects';
 
 // Shape of a quest row returned by GET /api/quests/mine
 interface TeacherQuest {
@@ -115,7 +116,7 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
             <button
               type="button"
               className="qc-gold-button quest-header-btn"
-              onClick={handleLogout}
+              onClick={() => {Click(); handleLogout();}} // click
             >
               Logout
             </button>
@@ -151,7 +152,7 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
                 <button
                   type="button"
                   className="qc-gold-button forge-button dashboard-create-btn"
-                  onClick={() => navigate('/admin/create-quest')}
+                  onClick={() => {navigate('/admin/create-quest'); Click();}} // click
                 >
                   + Create New Quest
                 </button>
@@ -187,14 +188,14 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
                             <button
                               type="button"
                               className="qc-gold-button dashboard-action-btn"
-                              onClick={() => navigate(`/admin/create-quest/${quest.id}`)}
+                              onClick={() => {navigate(`/admin/create-quest/${quest.id}`); Click();}} // click
                             >
                               Edit
                             </button>
                             <button
                               type="button"
                               className="qc-gold-button dashboard-delete-btn"
-                              onClick={() => handleDelete(quest.id)}
+                              onClick={() => {handleDelete(quest.id); Click();}} // click
                             >
                               Delete
                             </button>
@@ -264,7 +265,7 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
             <button
               type="button"
               className="qc-gold-button quest-header-btn"
-              onClick={handleLogout}
+              onClick={() => {Click(); handleLogout();}} // click
             >
               Logout
             </button>
@@ -299,14 +300,14 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
                     <button
                       type="button"
                       className="qc-gold-button forge-button dashboard-action-btn"
-                      onClick={() => handleStartRun(quest.id)}
+                      onClick={() => {handleStartRun(quest.id); Click();}} // click
                     >
                       Start Run
                     </button>
                     <button
                       type="button"
                       className="qc-gold-button dashboard-action-btn"
-                      onClick={() => alert('Stats coming soon!')}
+                      onClick={() => {alert('Stats coming soon!'); Click();}} // click
                     >
                       View Stats
                     </button>

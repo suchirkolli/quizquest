@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { use, useRef, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-
+import { BGM1, BGM2, CorrectAnswer, Ouch, Powerup, QuestStart, QuestFinish, QuestLost, Click, WrongAnswer } from '../components/SoundEffects';
 interface RunQuestion {
   id: number;
   prompt: string;
@@ -55,6 +55,7 @@ function RunningQuest() {
   const [attemptSaved, setAttemptSaved] = useState(false);
   const [attemptId, setAttemptId] = useState<number | null>(null);
   const [attemptMessage, setAttemptMessage] = useState('');
+  const bgmRef = useRef<HTMLAudioElement | null>(null); // Needed for audio
 
   useEffect(() => {
     if (!token || !rawUser) {
@@ -138,7 +139,7 @@ function RunningQuest() {
     if (!runFinished || attemptSaved || savingAttempt || !quest || !id || !token) {
       return;
     }
-
+     
     async function saveAttempt() {
       const answersToSave = runResults
         .filter((item) => item.selectedIndex !== null)
@@ -188,6 +189,21 @@ function RunningQuest() {
 
     saveAttempt();
   }, [runFinished, attemptSaved, savingAttempt, quest, id, token, runResults]);
+
+   // BACKGROUND MUSIC LOOP (if somethings breaking with the quiz, this is probably why)
+    useEffect(() => {
+      if (!quest || runFinished|| bgmRef.current){return;}
+      const backgroundAudio = BGM1();
+      backgroundAudio.play();
+      bgmRef.current = backgroundAudio;
+      return () => {      
+        if (bgmRef.current) {
+        bgmRef.current.pause();
+        bgmRef.current.currentTime = 0;
+        bgmRef.current = null;
+      }
+    };
+  }, [quest]);
 
   function handleGoBack() {
     navigate('/dashboard');
@@ -256,6 +272,9 @@ function RunningQuest() {
 
       if (!review.isCorrect) {
         setHealth((prev) => prev - 1);
+        Ouch(); // Lost Health sfx
+      }else{
+        CorrectAnswer(); // Correct sfx
       }
     } catch {
       setMessage('Could not connect to the server.');
@@ -284,6 +303,13 @@ function RunningQuest() {
     if (lastQuestion || noHealthLeft) {
       setQuestionResult(null);
       setRunFinished(true);
+      
+      // SFX
+      if (noHealthLeft) {
+        QuestLost();
+      } else {
+        QuestFinish();
+      }
       return;
     }
 
@@ -320,7 +346,7 @@ function RunningQuest() {
             </div>
 
             <div className="buttons">
-              <button type="button" className="button" onClick={handleGoBack}>
+              <button type="button" className="button" onClick={() => {handleGoBack(); Click();}}> // Added click sound
                 Back to Dashboard
               </button>
             </div>
@@ -350,7 +376,7 @@ function RunningQuest() {
             <button
               type="button"
               className="qc-gold-button quest-header-btn"
-              onClick={handleGoBack}
+              onClick={() => {handleGoBack(); Click();}} // click
             >
               Dashboard
             </button>
@@ -435,7 +461,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={handleGoBack}
+                      onClick={() => {handleGoBack(); Click();}} // click
                     >
                       Back to Dashboard
                     </button>
@@ -443,7 +469,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button forge-button quest-action-btn"
-                      onClick={handleConfirmAnswer}
+                      onClick={() => {handleConfirmAnswer(); Click();}} // click
                       disabled={checking}
                     >
                       {checking ? 'Checking...' : 'Confirm Answer'}
@@ -517,7 +543,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={handleGoBack}
+                      onClick={() => {handleGoBack(); Click();}} // click
                     >
                       Back to Dashboard
                     </button>
@@ -525,7 +551,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button forge-button quest-action-btn"
-                      onClick={handleNextQuestion}
+                      onClick={() => {handleNextQuestion(); Click();}} // click
                     >
                       {health <= 0 || currentQuestionIndex >= quest.questions.length - 1
                         ? 'View Final Summary'
@@ -625,7 +651,7 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button quest-action-btn"
-                  onClick={handleGoBack}
+                  onClick={() => {handleGoBack(); Click();}}
                 >
                   Back to Dashboard
                 </button>
@@ -633,7 +659,7 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button forge-button quest-action-btn"
-                  onClick={() => window.location.reload()}
+                  onClick={() => {window.location.reload(); Click();}} // click
                 >
                   Retry This Quest
                 </button>

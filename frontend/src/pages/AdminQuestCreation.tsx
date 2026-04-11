@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Quest, Question } from '../types/Quest';
+import { Click } from '../components/SoundEffects';
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
@@ -123,7 +124,7 @@ function AdminQuestCreation() {
             <button
               type="button"
               className="qc-gold-button quest-header-btn"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => {navigate('/dashboard'); Click();}} // SFX
             >
               Dashboard
             </button>
@@ -134,6 +135,7 @@ function AdminQuestCreation() {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 navigate('/welcome');
+                Click(); // SFX
               }}
             >
               Logout
@@ -237,7 +239,7 @@ function AdminQuestCreation() {
                 <button
                   type="button"
                   className="qc-gold-button quest-action-btn"
-                  onClick={handleAddQuestion}
+                  onClick={() => {handleAddQuestion(); Click();}} // SFX
                 >
                   + Add Another Question
                 </button>
