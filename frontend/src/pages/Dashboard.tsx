@@ -112,15 +112,6 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
         {/* Header */}
         <div className="dashboard-header">
           <h1 className="dashboard-title">Admin Dashboard</h1>
-          <div className="dashboard-header-actions">
-            <button
-              type="button"
-              className="qc-gold-button quest-header-btn"
-              onClick={() => {Click(); handleLogout();}} // click
-            >
-              Logout
-            </button>
-          </div>
         </div>
 
         {/* Parchment container */}
@@ -261,15 +252,6 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
         {/* Header */}
         <div className="dashboard-header">
           <h1 className="dashboard-title">Welcome, {user.username}!</h1>
-          <div className="dashboard-header-actions">
-            <button
-              type="button"
-              className="qc-gold-button quest-header-btn"
-              onClick={() => {Click(); handleLogout();}} // click
-            >
-              Logout
-            </button>
-          </div>
         </div>
 
         {/* Parchment container */}

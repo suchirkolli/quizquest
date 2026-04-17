@@ -120,27 +120,6 @@ function AdminQuestCreation() {
           <h1 className="quest-creation-title">
             {id ? 'Edit Quest' : 'Question Creation'}
           </h1>
-          <div className="quest-creation-header-actions">
-            <button
-              type="button"
-              className="qc-gold-button quest-header-btn"
-              onClick={() => {navigate('/dashboard'); Click();}} // SFX
-            >
-              Dashboard
-            </button>
-            <button
-              type="button"
-              className="qc-gold-button quest-header-btn"
-              onClick={() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                navigate('/welcome');
-                Click(); // SFX
-              }}
-            >
-              Logout
-            </button>
-          </div>
         </div>
 
         <div className="parchment-container">

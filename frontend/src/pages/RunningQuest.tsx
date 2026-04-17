@@ -371,16 +371,6 @@ function RunningQuest() {
           <h1 className="quest-creation-title">
             {runFinished ? 'Quest Summary' : 'Run Quest'}
           </h1>
-
-          <div className="quest-creation-header-actions">
-            <button
-              type="button"
-              className="qc-gold-button quest-header-btn"
-              onClick={() => {handleGoBack(); Click();}} // click
-            >
-              Dashboard
-            </button>
-          </div>
         </div>
 
         <div className="parchment-container">
