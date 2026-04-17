@@ -367,11 +367,18 @@
   border-bottom: none;
 }
 
+.question-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .question-block-title {
   font-size: 22px;
   font-weight: bold;
   color: #f3dfaa;
-  margin: 0 0 16px 0;
+  margin: 0;
   text-shadow: 1px 1px 0 #000000;
 }
 

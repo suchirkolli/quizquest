@@ -68,6 +68,10 @@ function AdminQuestCreation() {
     setQuestions(newQuestions);
   }
 
+  function handleDeleteQuestion(index: number) {
+    setQuestions(questions.filter((_, i) => i !== index));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -152,7 +156,18 @@ function AdminQuestCreation() {
               <div>
                 {questions.map((q, index) => (
                   <div key={index} className="question-block">
-                    <h3 className="question-block-title">Question #{index + 1}</h3>
+                    <div className="question-block-header">
+                      <h3 className="question-block-title">Question #{index + 1}</h3>
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          className="qc-gold-button dashboard-delete-btn"
+                          onClick={() => { handleDeleteQuestion(index); Click(); }}
+                        >
+                          Delete Question
+                        </button>
+                      )}
+                    </div>
 
                     <div className="question-block-fields">
                       <input
