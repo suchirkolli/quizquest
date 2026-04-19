@@ -1,6 +1,6 @@
-import { use, useRef, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BGM1, BGM2, CorrectAnswer, Ouch, Powerup, QuestStart, QuestFinish, QuestLost, Click, WrongAnswer } from '../components/SoundEffects';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
 interface RunQuestion {
   id: number;
   prompt: string;
@@ -28,6 +28,9 @@ interface ReviewItem {
   isCorrect: boolean;
   explanation: string;
   timedOut: boolean;
+  shieldBlockedDamage: boolean;
+  fiftyUsed: boolean;
+  freezeUsed: boolean;
 }
 
 function RunningQuest() {
@@ -55,7 +58,16 @@ function RunningQuest() {
   const [attemptSaved, setAttemptSaved] = useState(false);
   const [attemptId, setAttemptId] = useState<number | null>(null);
   const [attemptMessage, setAttemptMessage] = useState('');
-  const bgmRef = useRef<HTMLAudioElement | null>(null); // Needed for audio
+
+  const [shieldAvailable, setShieldAvailable] = useState(true);
+  const [shieldActive, setShieldActive] = useState(false);
+
+  const [fiftyAvailable, setFiftyAvailable] = useState(true);
+  const [fiftyHiddenIndexes, setFiftyHiddenIndexes] = useState<number[]>([]);
+  const [fiftyUsedThisQuestion, setFiftyUsedThisQuestion] = useState(false);
+
+  const [freezeAvailable, setFreezeAvailable] = useState(true);
+  const [freezeActive, setFreezeActive] = useState(false);
 
   useEffect(() => {
     if (!token || !rawUser) {
@@ -108,7 +120,7 @@ function RunningQuest() {
   }, [id, navigate, rawUser, token]);
 
   useEffect(() => {
-    if (loading || !quest || runFinished || questionResult || checking) {
+    if (loading || !quest || runFinished || questionResult || checking || freezeActive) {
       return;
     }
 
@@ -121,7 +133,7 @@ function RunningQuest() {
     }, 1000);
 
     return () => window.clearTimeout(timer);
-  }, [loading, quest, runFinished, questionResult, checking, timeLeft]);
+  }, [loading, quest, runFinished, questionResult, checking, freezeActive, timeLeft]);
 
   useEffect(() => {
     if (!quest || runFinished || questionResult || checking) {
@@ -139,7 +151,7 @@ function RunningQuest() {
     if (!runFinished || attemptSaved || savingAttempt || !quest || !id || !token) {
       return;
     }
-     
+
     async function saveAttempt() {
       const answersToSave = runResults
         .filter((item) => item.selectedIndex !== null)
@@ -150,7 +162,7 @@ function RunningQuest() {
 
       if (answersToSave.length === 0) {
         setAttemptSaved(true);
-        setAttemptMessage('No answered questions were saved for this attempt.');
+        setAttemptMessage('No answers were saved.');
         return;
       }
 
@@ -178,7 +190,7 @@ function RunningQuest() {
 
         setAttemptId(data.result?.attemptId || null);
         setAttemptSaved(true);
-        setAttemptMessage('Attempt saved successfully.');
+        setAttemptMessage('Attempt saved.');
       } catch {
         setAttemptSaved(true);
         setAttemptMessage('Could not save attempt.');
@@ -190,21 +202,6 @@ function RunningQuest() {
     saveAttempt();
   }, [runFinished, attemptSaved, savingAttempt, quest, id, token, runResults]);
 
-   // BACKGROUND MUSIC LOOP (if somethings breaking with the quiz, this is probably why)
-    useEffect(() => {
-      if (!quest || runFinished|| bgmRef.current){return;}
-      const backgroundAudio = BGM1();
-      backgroundAudio.play();
-      bgmRef.current = backgroundAudio;
-      return () => {      
-        if (bgmRef.current) {
-        bgmRef.current.pause();
-        bgmRef.current.currentTime = 0;
-        bgmRef.current = null;
-      }
-    };
-  }, [quest]);
-
   function handleGoBack() {
     navigate('/dashboard');
   }
@@ -215,6 +212,74 @@ function RunningQuest() {
     }
 
     return choices[choiceIndex] || '';
+  }
+
+  function handleUseShield() {
+    if (!shieldAvailable || shieldActive || questionResult || runFinished) {
+      return;
+    }
+
+    setShieldActive(true);
+    setMessage('Shield is on.');
+  }
+
+  async function handleUseFifty() {
+    if (!quest || !id || !token) {
+      return;
+    }
+
+    if (!fiftyAvailable || questionResult || runFinished || checking) {
+      return;
+    }
+
+    const currentQuestion = quest.questions[currentQuestionIndex];
+
+    if (!currentQuestion) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/play/quests/${id}/questions/${currentQuestion.id}/fifty`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message || 'Could not use 50/50.');
+        return;
+      }
+
+      const hideIndexes: number[] = data.result.hideIndexes || [];
+
+      setFiftyHiddenIndexes(hideIndexes);
+      setFiftyUsedThisQuestion(true);
+      setFiftyAvailable(false);
+
+      if (selectedIndex !== null && hideIndexes.includes(selectedIndex)) {
+        setSelectedIndex(null);
+      }
+
+      setMessage('50/50 is on.');
+    } catch {
+      setMessage('Could not connect to the server.');
+    }
+  }
+
+  function handleUseFreeze() {
+    if (!freezeAvailable || freezeActive || questionResult || runFinished) {
+      return;
+    }
+
+    setFreezeActive(true);
+    setFreezeAvailable(false);
+    setMessage('Timer is frozen.');
   }
 
   async function handleCheckQuestion(
@@ -230,6 +295,10 @@ function RunningQuest() {
     if (!currentQuestion) {
       return;
     }
+
+    const shieldWasActive = shieldActive;
+    const fiftyWasUsed = fiftyUsedThisQuestion;
+    const freezeWasUsed = freezeActive;
 
     setChecking(true);
     setMessage('');
@@ -256,6 +325,8 @@ function RunningQuest() {
         return;
       }
 
+      const shieldBlockedDamage = shieldWasActive && !data.result.isCorrect;
+
       const review: ReviewItem = {
         questionId: currentQuestion.id,
         prompt: currentQuestion.prompt,
@@ -265,17 +336,24 @@ function RunningQuest() {
         isCorrect: data.result.isCorrect,
         explanation: data.result.explanation,
         timedOut: timedOut,
+        shieldBlockedDamage: shieldBlockedDamage,
+        fiftyUsed: fiftyWasUsed,
+        freezeUsed: freezeWasUsed,
       };
 
       setQuestionResult(review);
       setRunResults((prev) => [...prev, review]);
 
       if (!review.isCorrect) {
-        setHealth((prev) => prev - 1);
-        Ouch(); // Lost Health sfx
-      }else{
-        CorrectAnswer(); // Correct sfx
+        if (shieldBlockedDamage) {
+          setShieldAvailable(false);
+        } else {
+          setHealth((prev) => Math.max(prev - 1, 0));
+        }
       }
+
+      setShieldActive(false);
+      setFreezeActive(false);
     } catch {
       setMessage('Could not connect to the server.');
     } finally {
@@ -285,7 +363,7 @@ function RunningQuest() {
 
   function handleConfirmAnswer() {
     if (selectedIndex === null) {
-      setMessage('Please choose an answer before confirming.');
+      setMessage('Choose an answer first.');
       return;
     }
 
@@ -303,13 +381,6 @@ function RunningQuest() {
     if (lastQuestion || noHealthLeft) {
       setQuestionResult(null);
       setRunFinished(true);
-      
-      // SFX
-      if (noHealthLeft) {
-        QuestLost();
-      } else {
-        QuestFinish();
-      }
       return;
     }
 
@@ -318,6 +389,10 @@ function RunningQuest() {
     setQuestionResult(null);
     setTimeLeft(15);
     setMessage('');
+    setShieldActive(false);
+    setFiftyHiddenIndexes([]);
+    setFiftyUsedThisQuestion(false);
+    setFreezeActive(false);
   }
 
   if (loading) {
@@ -326,7 +401,7 @@ function RunningQuest() {
         <div className="dashboard-max-width">
           <div className="parchment-container">
             <div className="quest-creation-intro">
-              <h1 className="quest-creation-build-title">Loading Quest</h1>
+              <h1 className="quest-creation-build-title">Loading</h1>
               <p className="quest-creation-subtitle">Please wait...</p>
             </div>
           </div>
@@ -341,13 +416,13 @@ function RunningQuest() {
         <div className="dashboard-max-width">
           <div className="parchment-container">
             <div className="quest-creation-intro">
-              <h1 className="quest-creation-build-title">Quest Load Error</h1>
+              <h1 className="quest-creation-build-title">Error</h1>
               <p className="error">{message}</p>
             </div>
 
             <div className="buttons">
-              <button type="button" className="button" onClick={() => {handleGoBack(); Click();}}> // Added click sound
-                Back to Dashboard
+              <button type="button" className="button" onClick={handleGoBack}>
+                Back
               </button>
             </div>
           </div>
@@ -369,8 +444,18 @@ function RunningQuest() {
       <div className="quest-creation-max-width">
         <div className="quest-creation-header">
           <h1 className="quest-creation-title">
-            {runFinished ? 'Quest Summary' : 'Run Quest'}
+            {runFinished ? 'Summary' : 'Quest'}
           </h1>
+
+          <div className="quest-creation-header-actions">
+            <button
+              type="button"
+              className="qc-gold-button quest-header-btn"
+              onClick={handleGoBack}
+            >
+              Back
+            </button>
+          </div>
         </div>
 
         <div className="parchment-container">
@@ -379,13 +464,13 @@ function RunningQuest() {
 
             {!runFinished && (
               <p className="quest-creation-subtitle">
-                Answer one question at a time before your health runs out.
+                Answer each question before your health runs out.
               </p>
             )}
 
             {runFinished && (
               <p className="quest-creation-subtitle">
-                Your run is over. Review your full quest summary below.
+                Here are your results.
               </p>
             )}
           </div>
@@ -404,7 +489,21 @@ function RunningQuest() {
                 </span>
                 <span className="dashboard-stats-divider">|</span>
                 <span>
-                  Time Left: <strong>{timeLeft}</strong>
+                  Time: <strong>{timeLeft}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Shield:{' '}
+                  <strong>{shieldActive ? 'On' : shieldAvailable ? 'Ready' : 'Used'}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  50/50: <strong>{fiftyAvailable ? 'Ready' : 'Used'}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Freeze:{' '}
+                  <strong>{freezeActive ? 'On' : freezeAvailable ? 'Ready' : 'Used'}</strong>
                 </span>
                 <span className="dashboard-stats-divider">|</span>
                 <span>
@@ -421,28 +520,34 @@ function RunningQuest() {
 
                   <div className="question-block-fields">
                     <div className="row">
-                      <label className="quest-field-label">Prompt</label>
+                      <label className="quest-field-label">Question</label>
                       <div className="qc-input-field">{currentQuestion.prompt}</div>
                     </div>
 
                     <div className="row">
-                      <label className="quest-field-label">Choices</label>
+                      <label className="quest-field-label">Answers</label>
 
                       <div className="options-grid">
-                        {currentQuestion.choices.map((choice, choiceIndex) => (
-                          <label key={choiceIndex} className="option-row">
-                            <input
-                              className="option-radio"
-                              type="radio"
-                              name={`question-${currentQuestion.id}`}
-                              checked={selectedIndex === choiceIndex}
-                              onChange={() => setSelectedIndex(choiceIndex)}
-                            />
-                            <div className="qc-input-field option-text-input">
-                              {choice}
-                            </div>
-                          </label>
-                        ))}
+                        {currentQuestion.choices.map((choice, choiceIndex) => {
+                          if (fiftyHiddenIndexes.includes(choiceIndex)) {
+                            return null;
+                          }
+
+                          return (
+                            <label key={choiceIndex} className="option-row">
+                              <input
+                                className="option-radio"
+                                type="radio"
+                                name={`question-${currentQuestion.id}`}
+                                checked={selectedIndex === choiceIndex}
+                                onChange={() => setSelectedIndex(choiceIndex)}
+                              />
+                              <div className="qc-input-field option-text-input">
+                                {choice}
+                              </div>
+                            </label>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -451,18 +556,45 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={() => {handleGoBack(); Click();}} // click
+                      onClick={handleGoBack}
                     >
-                      Back to Dashboard
+                      Back
+                    </button>
+
+                    <button
+                      type="button"
+                      className="qc-gold-button quest-action-btn"
+                      onClick={handleUseShield}
+                      disabled={!shieldAvailable || shieldActive || checking}
+                    >
+                      {shieldActive ? 'Shield On' : shieldAvailable ? 'Shield' : 'Shield Used'}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="qc-gold-button quest-action-btn"
+                      onClick={handleUseFifty}
+                      disabled={!fiftyAvailable || checking}
+                    >
+                      {fiftyAvailable ? '50/50' : '50/50 Used'}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="qc-gold-button quest-action-btn"
+                      onClick={handleUseFreeze}
+                      disabled={!freezeAvailable || freezeActive || checking}
+                    >
+                      {freezeActive ? 'Freeze On' : freezeAvailable ? 'Freeze' : 'Freeze Used'}
                     </button>
 
                     <button
                       type="button"
                       className="qc-gold-button forge-button quest-action-btn"
-                      onClick={() => {handleConfirmAnswer(); Click();}} // click
+                      onClick={handleConfirmAnswer}
                       disabled={checking}
                     >
-                      {checking ? 'Checking...' : 'Confirm Answer'}
+                      {checking ? 'Checking...' : 'Confirm'}
                     </button>
                   </div>
                 </div>
@@ -471,12 +603,12 @@ function RunningQuest() {
               {questionResult && (
                 <div className="question-block">
                   <h3 className="question-block-title">
-                    Review for Question {currentQuestionIndex + 1}
+                    Review
                   </h3>
 
                   <div className="question-block-fields">
                     <div className="row">
-                      <label className="quest-field-label">Prompt</label>
+                      <label className="quest-field-label">Question</label>
                       <div className="qc-input-field">{questionResult.prompt}</div>
                     </div>
 
@@ -503,7 +635,7 @@ function RunningQuest() {
                     <div className="row">
                       <label className="quest-field-label">Result</label>
                       <div className="qc-input-field">
-                        {questionResult.isCorrect ? 'Correct' : 'Incorrect'}
+                        {questionResult.isCorrect ? 'Correct' : 'Wrong'}
                       </div>
                     </div>
 
@@ -515,15 +647,42 @@ function RunningQuest() {
                     </div>
 
                     <div className="row">
-                      <label className="quest-field-label">Health Now</label>
+                      <label className="quest-field-label">Health</label>
                       <div className="qc-input-field">{health}</div>
                     </div>
 
+                    {questionResult.shieldBlockedDamage && (
+                      <div className="row">
+                        <label className="quest-field-label">Shield</label>
+                        <div className="qc-input-field">
+                          Shield blocked the damage.
+                        </div>
+                      </div>
+                    )}
+
+                    {questionResult.fiftyUsed && (
+                      <div className="row">
+                        <label className="quest-field-label">50/50</label>
+                        <div className="qc-input-field">
+                          50/50 was used here.
+                        </div>
+                      </div>
+                    )}
+
+                    {questionResult.freezeUsed && (
+                      <div className="row">
+                        <label className="quest-field-label">Freeze</label>
+                        <div className="qc-input-field">
+                          Freeze was used here.
+                        </div>
+                      </div>
+                    )}
+
                     {questionResult.timedOut && (
                       <div className="row">
-                        <label className="quest-field-label">Timer</label>
+                        <label className="quest-field-label">Time</label>
                         <div className="qc-input-field">
-                          Time ran out on this question.
+                          Time ran out.
                         </div>
                       </div>
                     )}
@@ -533,19 +692,19 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={() => {handleGoBack(); Click();}} // click
+                      onClick={handleGoBack}
                     >
-                      Back to Dashboard
+                      Back
                     </button>
 
                     <button
                       type="button"
                       className="qc-gold-button forge-button quest-action-btn"
-                      onClick={() => {handleNextQuestion(); Click();}} // click
+                      onClick={handleNextQuestion}
                     >
                       {health <= 0 || currentQuestionIndex >= quest.questions.length - 1
-                        ? 'View Final Summary'
-                        : 'Next Question'}
+                        ? 'Summary'
+                        : 'Next'}
                     </button>
                   </div>
                 </div>
@@ -557,7 +716,7 @@ function RunningQuest() {
             <>
               <div className="dashboard-stats-bar">
                 <span>
-                  Health Left: <strong>{health}</strong>
+                  Health: <strong>{health}</strong>
                 </span>
                 <span className="dashboard-stats-divider">|</span>
                 <span>
@@ -569,17 +728,30 @@ function RunningQuest() {
                 </span>
                 <span className="dashboard-stats-divider">|</span>
                 <span>
-                  Questions Seen: <strong>{runResults.length}</strong> /{' '}
+                  Shield: <strong>{shieldAvailable ? 'Ready' : 'Used'}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  50/50: <strong>{fiftyAvailable ? 'Ready' : 'Used'}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Freeze: <strong>{freezeAvailable ? 'Ready' : 'Used'}</strong>
+                </span>
+                <span className="dashboard-stats-divider">|</span>
+                <span>
+                  Seen: <strong>{runResults.length}</strong> /{' '}
                   <strong>{quest.questions.length}</strong>
                 </span>
               </div>
 
               <div className="box">
-                <p className="box-title">Run Status</p>
+                <p className="box-title">Status</p>
+
                 {health <= 0 ? (
-                  <p>You ran out of health before finishing the full quest.</p>
+                  <p>You ran out of health.</p>
                 ) : (
-                  <p>You completed the quest run.</p>
+                  <p>You finished the quest.</p>
                 )}
 
                 {savingAttempt && <p>Saving attempt...</p>}
@@ -595,7 +767,7 @@ function RunningQuest() {
 
                   <div className="question-block-fields">
                     <div className="row">
-                      <label className="quest-field-label">Prompt</label>
+                      <label className="quest-field-label">Question</label>
                       <div className="qc-input-field">{item.prompt}</div>
                     </div>
 
@@ -616,7 +788,7 @@ function RunningQuest() {
                     <div className="row">
                       <label className="quest-field-label">Result</label>
                       <div className="qc-input-field">
-                        {item.isCorrect ? 'Correct' : 'Incorrect'}
+                        {item.isCorrect ? 'Correct' : 'Wrong'}
                       </div>
                     </div>
 
@@ -625,11 +797,38 @@ function RunningQuest() {
                       <div className="qc-input-field">{item.explanation}</div>
                     </div>
 
+                    {item.shieldBlockedDamage && (
+                      <div className="row">
+                        <label className="quest-field-label">Shield</label>
+                        <div className="qc-input-field">
+                          Shield blocked damage here.
+                        </div>
+                      </div>
+                    )}
+
+                    {item.fiftyUsed && (
+                      <div className="row">
+                        <label className="quest-field-label">50/50</label>
+                        <div className="qc-input-field">
+                          50/50 was used here.
+                        </div>
+                      </div>
+                    )}
+
+                    {item.freezeUsed && (
+                      <div className="row">
+                        <label className="quest-field-label">Freeze</label>
+                        <div className="qc-input-field">
+                          Freeze was used here.
+                        </div>
+                      </div>
+                    )}
+
                     {item.timedOut && (
                       <div className="row">
-                        <label className="quest-field-label">Timer</label>
+                        <label className="quest-field-label">Time</label>
                         <div className="qc-input-field">
-                          No answer was selected before time ran out.
+                          No answer was chosen in time.
                         </div>
                       </div>
                     )}
@@ -641,38 +840,21 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button quest-action-btn"
-                  onClick={() => {handleGoBack(); Click();}}
+                  onClick={handleGoBack}
                 >
-                  Back to Dashboard
+                  Back
                 </button>
 
                 <button
                   type="button"
                   className="qc-gold-button forge-button quest-action-btn"
-                  onClick={() => {window.location.reload(); Click();}} // click
+                  onClick={() => window.location.reload()}
                 >
-                  Retry This Quest
+                  Retry
                 </button>
               </div>
             </>
           )}
-
-          <div className="box">
-            <p className="box-title">Phase 5 Status</p>
-            <p>
-              This run page now uses health, a timer, one question at a time,
-              immediate question review, and a final summary at the end.
-            </p>
-            <p>
-              The next phase can add the first real protective powerup without
-              changing the teacher quest flow.
-            </p>
-            <p>
-              <Link className="form-link" to="/dashboard">
-                Return to dashboard
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>
