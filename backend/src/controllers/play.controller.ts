@@ -74,6 +74,53 @@ export const checkQuestion = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const getFiftyFiftyChoices = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (req.user.role !== "STUDENT") {
+      return res.status(403).json({ message: "Only students can use powerups here" });
+    }
+
+    const questId = Number(req.params.id);
+    const questionId = Number(req.params.questionId);
+
+    if (Number.isNaN(questId) || Number.isNaN(questionId)) {
+      return res.status(400).json({ message: "Invalid quest or question id" });
+    }
+
+    const question = await prisma.question.findFirst({
+      where: {
+        id: questionId,
+        questId: questId,
+      },
+    });
+
+    if (!question) {
+      return res.status(404).json({ message: "Question not found for this quest" });
+    }
+
+    const wrongIndexes = [0, 1, 2, 3].filter(
+      (index) => index !== question.correctIndex
+    );
+
+    const hideIndexes = wrongIndexes.slice(0, 2);
+
+    return res.status(200).json({
+      message: "50/50 works yay!",
+      result: {
+        questionId: question.id,
+        hideIndexes: hideIndexes,
+      },
+    });
+  } catch (error) {
+    console.error("FIFTY FIFTY ERROR:", error);
+    return res.status(500).json({ message: "Server error while using 50/50" });
+  }
+};
+
 export const submitQuest = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
