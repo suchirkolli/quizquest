@@ -1,3 +1,5 @@
+// References:
+// React Router Link: https://reactrouter.com/api/components/Link
 import { Link } from 'react-router-dom';
 
 function Welcome() {

@@ -1,3 +1,9 @@
+// References:
+// React useState: https://react.dev/reference/react/useState
+// React useEffect: https://react.dev/reference/react/useEffect
+// React Router useNavigate: https://reactrouter.com/api/hooks/useNavigate
+// MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+// MDN localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Click} from '../components/SoundEffects';

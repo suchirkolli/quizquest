@@ -1,3 +1,9 @@
+// References:
+// React useState: https://react.dev/reference/react/useState
+// React Router useNavigate: https://reactrouter.com/api/hooks/useNavigate
+// React Router Link: https://reactrouter.com/api/components/Link
+// MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+// MDN localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 

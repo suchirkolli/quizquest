@@ -1,3 +1,6 @@
+// References:
+// React Router Routes and Route: https://reactrouter.com/start/declarative/routing
+// React Router Navigate: https://reactrouter.com/api/components/Navigate
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/NavBar';

@@ -1,3 +1,7 @@
+// References:
+// Express routing guide: https://expressjs.com/en/guide/routing.html
+// Prisma CRUD docs: https://www.prisma.io/docs/orm/prisma-client/queries/crud
+// Zod docs: https://zod.dev/
 import { Response } from "express";
 import { z } from "zod";
 import prisma from "../lib/prisma";

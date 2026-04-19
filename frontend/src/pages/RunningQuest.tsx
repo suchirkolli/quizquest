@@ -1,3 +1,11 @@
+// References:
+// React useState: https://react.dev/reference/react/useState
+// React useEffect: https://react.dev/reference/react/useEffect
+// React Router useNavigate: https://reactrouter.com/api/hooks/useNavigate
+// React Router useParams: https://reactrouter.com/api/hooks/useParams
+// MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+// MDN localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+// MDN setTimeout: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
