@@ -93,7 +93,7 @@ On a fresh database, use the built-in registration pages to create these account
 - Username: `frodo`
 - Password: `hobbit`
 
-## Suggested Grading Flow
+## Suggested Usage Map
 1. Register the teacher account
 2. Log in as teacher
 3. Create at least one quest
