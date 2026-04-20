@@ -15,12 +15,12 @@ export const BGM2 = () => {
 
 export const CorrectAnswer = () => {
     const audio = new Audio('/QQAudio/CorrectAnswer.mp3');
-    return audio;
+    audio.play();
 };
 
 export const Ouch = () => {
     const audio = new Audio('/QQAudio/Ouch.mp3');
-    return audio;
+    audio.play();
 };
 
 export const Powerup = () => {
@@ -35,12 +35,12 @@ export const QuestStart = () => {
 
 export const QuestFinish = () => {
     const audio = new Audio('/QQAudio/QuestFinish.mp3');
-    return audio;
+    audio.play();
 };
 
 export const QuestLost = () => {
     const audio = new Audio('/QQAudio/QuestLost.mp3');
-    return audio;
+    audio.play();
 };
 
 export const Click = () => {

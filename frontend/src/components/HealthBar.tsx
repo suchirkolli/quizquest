@@ -5,17 +5,45 @@ import React, { useState } from 'react';
 subtract 1 each time an incorrect option is given, and change boolean values according to the health number
 change the front end dispay of the hearts based on the health number. red heart = true, X = false */
 interface HealthBarHearts {
-    heart1: boolean;
-    heart2: boolean;
-    heart3: boolean;
+    healthNumber: number;
 }
-export default function Healthbar({heart1, heart2, heart3}: HealthBarHearts) {
-    const healthNumber = 3;
-    return (<div>
-        // ngl this part auto filled so I'm just gonna roll with it bc it seems good (for now)
-        <span>{heart1 ? '❤️' : 'X'}</span> // if true then heart, if false then X
-        <span>{heart2 ? '❤️' : 'X'}</span>
-        <span>{heart3 ? '❤️' : 'X'}</span>
-    </div>
-);
+export default function Healthbar({healthNumber}: HealthBarHearts) {
+    <span> Health:</span>
+        if (healthNumber === 3) {
+            return (
+                <span>
+                    <span>❤️</span>
+                    <span>❤️</span>
+                    <span>❤️</span>
+                </span>
+            );
+        }
+        else if (healthNumber === 2) {
+            return (
+                <span>
+                    <span>❤️</span>
+                    <span>❤️</span>
+                    <span>💀</span>
+                </span>
+            );
+        }
+        else if (healthNumber === 1) {
+            return (
+                <span>
+                    <span>❤️</span>
+                    <span>💀</span>
+                    <span>💀</span>
+                </span>
+            );
+        }
+            else {
+                return (
+                    <span>
+                    <span>💀</span>
+                    <span>💀</span>
+                    <span>💀</span>
+                    </span>
+                );
+            }
+        
 }

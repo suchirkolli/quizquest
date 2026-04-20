@@ -6,8 +6,10 @@
 // MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 // MDN localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 // MDN setTimeout: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { BGM1, BGM2, CorrectAnswer, Ouch, Powerup, QuestStart, QuestFinish, QuestLost, Click, WrongAnswer } from '../components/SoundEffects';
+import Healthbar from '../components/HealthBar';
 
 interface RunQuestion {
   id: number;
@@ -76,6 +78,7 @@ function RunningQuest() {
 
   const [freezeAvailable, setFreezeAvailable] = useState(true);
   const [freezeActive, setFreezeActive] = useState(false);
+    const bgmRef = useRef<HTMLAudioElement | null>(null); // Needed for audio
 
   useEffect(() => {
     if (!token || !rawUser) {
@@ -210,6 +213,21 @@ function RunningQuest() {
     saveAttempt();
   }, [runFinished, attemptSaved, savingAttempt, quest, id, token, runResults]);
 
+  // Edit: BGM got removed, added it back
+ // BACKGROUND MUSIC LOOP (if somethings breaking with the quiz, this is probably why)
+    useEffect(() => {
+      if (!quest || runFinished|| bgmRef.current){return;}
+      const backgroundAudio = BGM1();
+      backgroundAudio.play();
+      bgmRef.current = backgroundAudio;
+      return () => {      
+        if (bgmRef.current) {
+        bgmRef.current.pause();
+        bgmRef.current.currentTime = 0;
+        bgmRef.current = null;
+      }
+    };
+  }, [quest]);
   function handleGoBack() {
     navigate('/dashboard');
   }
@@ -357,8 +375,13 @@ function RunningQuest() {
           setShieldAvailable(false);
         } else {
           setHealth((prev) => Math.max(prev - 1, 0));
+          Ouch(); // Lost Health sfx
         }
       }
+      // Correct Sound SFX
+        else {
+          CorrectAnswer(); // Correct sfx
+        }
 
       setShieldActive(false);
       setFreezeActive(false);
@@ -389,6 +412,12 @@ function RunningQuest() {
     if (lastQuestion || noHealthLeft) {
       setQuestionResult(null);
       setRunFinished(true);
+      // sfx
+      if (noHealthLeft) {
+        QuestLost(); 
+      } else {
+        QuestFinish(); 
+      }
       return;
     }
 
@@ -493,7 +522,7 @@ function RunningQuest() {
             <>
               <div className="dashboard-stats-bar">
                 <span>
-                  Health: <strong>{health}</strong>
+                  Health: <Healthbar healthNumber={health} />
                 </span>
                 <span className="dashboard-stats-divider">|</span>
                 <span>
@@ -581,7 +610,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={handleUseFifty}
+                      onClick={handleUseFifty}//
                       disabled={!fiftyAvailable || checking}
                     >
                       {fiftyAvailable ? '50/50' : '50/50 Used'}
@@ -590,7 +619,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={handleUseFreeze}
+                      onClick={handleUseFreeze}//
                       disabled={!freezeAvailable || freezeActive || checking}
                     >
                       {freezeActive ? 'Freeze On' : freezeAvailable ? 'Freeze' : 'Freeze Used'}
@@ -599,7 +628,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button forge-button quest-action-btn"
-                      onClick={handleConfirmAnswer}
+                      onClick={handleConfirmAnswer}//
                       disabled={checking}
                     >
                       {checking ? 'Checking...' : 'Confirm'}
@@ -700,7 +729,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button quest-action-btn"
-                      onClick={handleGoBack}
+                      onClick={handleGoBack}//
                     >
                       Back
                     </button>
@@ -708,7 +737,7 @@ function RunningQuest() {
                     <button
                       type="button"
                       className="qc-gold-button forge-button quest-action-btn"
-                      onClick={handleNextQuestion}
+                      onClick={handleNextQuestion}//
                     >
                       {health <= 0 || currentQuestionIndex >= quest.questions.length - 1
                         ? 'Summary'
@@ -848,7 +877,7 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button quest-action-btn"
-                  onClick={handleGoBack}
+                  onClick={() => {handleGoBack(); Click();}} // Added clicking sound 
                 >
                   Back
                 </button>
@@ -856,7 +885,7 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button forge-button quest-action-btn"
-                  onClick={() => window.location.reload()}
+                  onClick={() => { Click(); window.location.reload(); }}
                 >
                   Retry
                 </button>
