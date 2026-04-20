@@ -8,7 +8,7 @@
 // MDN setTimeout: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BGM1, Fiftyfifty, CorrectAnswer, Ouch, Shield, FreezeSFX, QuestFinish, QuestLost, Click, WrongAnswer } from '../components/SoundEffects';
+import { BGM1, Fiftyfifty, CorrectAnswer, Ouch, Shield, FreezeSFX, QuestFinish, QuestLost, Click } from '../components/SoundEffects';
 import Healthbar from '../components/HealthBar';
 
 interface RunQuestion {

@@ -103,12 +103,6 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
     }
   }
 
-  function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/welcome');
-  }
-
   const totalQuestions = quests.reduce((sum, q) => sum + q.questions.length, 0);
 
   return (
@@ -240,12 +234,6 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
     }
     fetchQuests();
   }, []);
-
-  function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/welcome');
-  }
 
   function handleStartRun(questId: number) {
     navigate(`/quests/${questId}/run`);

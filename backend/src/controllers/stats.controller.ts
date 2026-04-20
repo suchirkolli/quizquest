@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 
 export const getMyStats = async (req: any, res: Response) => {
-  const userId = req.user.id;
+  const userId = req.user.userId;
 
   const attempts = await prisma.attempt.findMany({
     where: { studentId: userId },

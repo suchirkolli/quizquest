@@ -28,11 +28,13 @@ export const Ouch = () => {
 
 export const Powerup = () => {
     const audio = new Audio('/QQAudio/Powerup.mp3');
+    audio.play();
     return audio;
 };
 
 export const QuestStart = () => {
     const audio = new Audio('/QQAudio/QuestStart.mp3');
+    audio.play();
     return audio;
 };
 
@@ -50,12 +52,13 @@ export const QuestLost = () => {
 
 export const Click = () => {
     const audio = new Audio('/QQAudio/Select.mp3');
+    audio.play();
     return audio;
-
 };
 
 export const WrongAnswer = () => {
     const audio = new Audio('/QQAudio/WrongAnswer.mp3');
+    audio.play();
     return audio;
 };
 
