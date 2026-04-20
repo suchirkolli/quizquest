@@ -6,7 +6,6 @@
 // MDN localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Click} from '../components/SoundEffects';
 
 // Shape of a quest row returned by GET /api/quests/mine
 interface TeacherQuest {
@@ -143,7 +142,7 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
                 <button
                   type="button"
                   className="qc-gold-button forge-button dashboard-create-btn"
-                  onClick={() => {navigate('/admin/create-quest'); Click();}} // click
+                  onClick={() => {navigate('/admin/create-quest');}} 
                 >
                   + Create New Quest
                 </button>
@@ -179,14 +178,14 @@ function TeacherDashboard({ user, token }: { user: StoredUser; token: string }) 
                             <button
                               type="button"
                               className="qc-gold-button dashboard-action-btn"
-                              onClick={() => {navigate(`/admin/create-quest/${quest.id}`); Click();}} // click
+                              onClick={() => {navigate(`/admin/create-quest/${quest.id}`);}}
                             >
                               Edit
                             </button>
                             <button
                               type="button"
                               className="qc-gold-button dashboard-delete-btn"
-                              onClick={() => {handleDelete(quest.id); Click();}} // click
+                              onClick={() => {handleDelete(quest.id);}} 
                             >
                               Delete
                             </button>
@@ -276,14 +275,14 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
                     <button
                       type="button"
                       className="qc-gold-button forge-button dashboard-action-btn"
-                      onClick={() => {handleStartRun(quest.id); Click();}} // click
+                      onClick={() => {handleStartRun(quest.id);}}
                     >
                       Start Run
                     </button>
                     <button
                       type="button"
                       className="qc-gold-button dashboard-action-btn"
-                      onClick={() => { navigate(`/quests/${quest.id}/stats`); Click(); }}
+                      onClick={() => { navigate(`/quests/${quest.id}/stats`);}}
                     >
                       View Stats
                     </button>

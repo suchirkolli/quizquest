@@ -192,7 +192,7 @@ function QuestStats() {
                             <button
                               type="button"
                               className="qc-gold-button dashboard-action-btn"
-                              onClick={() => { handleToggleReview(attempt.id); Click(); }}
+                              onClick={() => {handleToggleReview(attempt.id);}}
                             >
                               {expandedAttemptId === attempt.id ? 'Hide' : 'Review'}
                             </button>

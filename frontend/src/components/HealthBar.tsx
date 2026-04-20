@@ -1,3 +1,4 @@
+// Using this tutorial to get a general idea of how to make a health bar https://youtu.be/Z4KgaYlth0k?si=GhtGsP_xppartx_e
 interface HealthBarHearts {
   healthNumber: number;
 }

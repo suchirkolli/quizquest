@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { Quest, Question } from '../types/Quest';
-import { Click } from '../components/SoundEffects';
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
@@ -161,7 +160,7 @@ function AdminQuestCreation() {
                         <button
                           type="button"
                           className="qc-gold-button dashboard-delete-btn"
-                          onClick={() => { handleDeleteQuestion(index); Click(); }}
+                          onClick={() => { handleDeleteQuestion(index);}}
                         >
                           Delete Question
                         </button>
@@ -232,7 +231,7 @@ function AdminQuestCreation() {
                 <button
                   type="button"
                   className="qc-gold-button quest-action-btn"
-                  onClick={() => {handleAddQuestion(); Click();}} // SFX
+                  onClick={() => {handleAddQuestion();}}
                 >
                   + Add Another Question
                 </button>
