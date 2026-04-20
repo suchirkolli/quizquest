@@ -4,6 +4,7 @@
 export const BGM1 = () => {
     const audio = new Audio('/QQAudio/BGM1.mp3');
     audio.loop = true;
+    audio.volume = 0.25;
     return audio;
 };
 
@@ -15,12 +16,14 @@ export const BGM2 = () => {
 
 export const CorrectAnswer = () => {
     const audio = new Audio('/QQAudio/CorrectAnswer.mp3');
-    return audio;
+    audio.volume = 0.6;
+    audio.play();
 };
 
 export const Ouch = () => {
     const audio = new Audio('/QQAudio/Ouch.mp3');
-    return audio;
+    audio.volume = 0.4;
+    audio.play();
 };
 
 export const Powerup = () => {
@@ -35,12 +38,14 @@ export const QuestStart = () => {
 
 export const QuestFinish = () => {
     const audio = new Audio('/QQAudio/QuestFinish.mp3');
-    return audio;
+    audio.volume = 0.6
+    audio.play();
 };
 
 export const QuestLost = () => {
     const audio = new Audio('/QQAudio/QuestLost.mp3');
-    return audio;
+    audio.volume = 0.4
+    audio.play();
 };
 
 export const Click = () => {
@@ -52,6 +57,23 @@ export const Click = () => {
 export const WrongAnswer = () => {
     const audio = new Audio('/QQAudio/WrongAnswer.mp3');
     return audio;
+};
+
+// powerups
+export const Fiftyfifty = () => {
+    const audio = new Audio('/QQAudio/5050.mp3');
+    audio.volume = 0.6
+    audio.play();
+};
+export const FreezeSFX = () => {
+    const audio = new Audio('/QQAudio/Freeze.mp3');
+    audio.volume = 0.6
+    audio.play();
+};
+export const Shield = () => {
+    const audio = new Audio('/QQAudio/Shield.mp3');
+    audio.volume = 0.6
+    audio.play();
 };
 
 
