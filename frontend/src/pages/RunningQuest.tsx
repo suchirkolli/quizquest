@@ -8,6 +8,8 @@
 // MDN setTimeout: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Click } from '../components/SoundEffects';
+import Healthbar from '../components/HealthBar';
 
 interface RunQuestion {
   id: number;
@@ -493,7 +495,7 @@ function RunningQuest() {
             <>
               <div className="dashboard-stats-bar">
                 <span>
-                  Health: <strong>{health}</strong>
+                  Health: <Healthbar healthNumber={health} />
                 </span>
                 <span className="dashboard-stats-divider">|</span>
                 <span>
@@ -848,7 +850,7 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button quest-action-btn"
-                  onClick={handleGoBack}
+                  onClick={() => {handleGoBack(); Click();}} // Added clicking sound 
                 >
                   Back
                 </button>
@@ -856,7 +858,7 @@ function RunningQuest() {
                 <button
                   type="button"
                   className="qc-gold-button forge-button quest-action-btn"
-                  onClick={() => window.location.reload()}
+                  onClick={() => { Click(); window.location.reload(); }}
                 >
                   Retry
                 </button>
