@@ -10,8 +10,15 @@ export const getMyStats = async (req: any, res: Response) => {
   });
 
   const totalAttempts = attempts.length;
-  const totalScore = attempts.reduce((sum, a) => sum + a.score, 0);
-  const totalQuestions = attempts.reduce((sum, a) => sum + a.totalQuestions, 0);
+  const totalScore = attempts.reduce(
+    (sum: number, a: { score: number }) => sum + a.score,
+    0
+  );
+
+  const totalQuestions = attempts.reduce(
+    (sum: number, a: { totalQuestions: number }) => sum + a.totalQuestions,
+    0
+  );
 
   res.json({
     totalAttempts,
