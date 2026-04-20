@@ -8,7 +8,7 @@
 // MDN setTimeout: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BGM1, BGM2, CorrectAnswer, Ouch, Powerup, QuestStart, QuestFinish, QuestLost, Click, WrongAnswer } from '../components/SoundEffects';
+import { BGM1, Fiftyfifty, CorrectAnswer, Ouch, Shield, FreezeSFX, QuestFinish, QuestLost, Click, WrongAnswer } from '../components/SoundEffects';
 import Healthbar from '../components/HealthBar';
 
 interface RunQuestion {
@@ -247,6 +247,7 @@ function RunningQuest() {
 
     setShieldActive(true);
     setMessage('Shield is on.');
+    Shield(); // sfx
   }
 
   async function handleUseFifty() {
@@ -293,6 +294,7 @@ function RunningQuest() {
       }
 
       setMessage('50/50 is on.');
+      Fiftyfifty(); // sfx
     } catch {
       setMessage('Could not connect to the server.');
     }
@@ -306,6 +308,7 @@ function RunningQuest() {
     setFreezeActive(true);
     setFreezeAvailable(false);
     setMessage('Timer is frozen.');
+    FreezeSFX(); // sfx
   }
 
   async function handleCheckQuestion(

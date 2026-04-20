@@ -54,4 +54,18 @@ export const WrongAnswer = () => {
     return audio;
 };
 
+// powerups
+export const Fiftyfifty = () => {
+    const audio = new Audio('/QQAudio/5050.mp3');
+    audio.play();
+};
+export const FreezeSFX = () => {
+    const audio = new Audio('/QQAudio/Freeze.mp3');
+    audio.play();
+};
+export const Shield = () => {
+    const audio = new Audio('/QQAudio/Shield.mp3');
+    audio.play();
+};
+
 
