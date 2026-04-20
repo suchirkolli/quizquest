@@ -1,3 +1,10 @@
+// References:
+// React useState – https://react.dev/reference/react/useState
+// React useEffect - https://react.dev/reference/react/useEffect
+// React Router useParams – https://reactrouter.com/en/main/hooks/use-params
+// MDN Fetch API – https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+// MDN localStorage – https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { Quest, Question } from '../types/Quest';
