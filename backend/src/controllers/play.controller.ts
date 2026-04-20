@@ -20,6 +20,22 @@ const submitQuestSchema = z.object({
   ),
 });
 
+type GradedAnswer = {
+  questionId: number;
+  prompt: string;
+  selectedIndex: number | null;
+  correctIndex: number;
+  isCorrect: boolean;
+  explanation: string;
+};
+
+type QuestQuestion = {
+  id: number;
+  prompt: string;
+  correctIndex: number;
+  explanation: string;
+};
+
 export const checkQuestion = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
@@ -167,25 +183,27 @@ export const submitQuest = async (req: AuthRequest, res: Response) => {
 
     let score = 0;
 
-    const gradedAnswers = quest.questions.map((question) => {
-      const selectedIndex = answerMap.get(question.id);
+    const gradedAnswers: GradedAnswer[] = quest.questions.map(
+      (question: QuestQuestion) => {
+        const selectedIndex = answerMap.get(question.id);
 
-      const isCorrect =
-        selectedIndex !== undefined && selectedIndex === question.correctIndex;
+        const isCorrect =
+          selectedIndex !== undefined && selectedIndex === question.correctIndex;
 
-      if (isCorrect) {
-        score += 1;
+        if (isCorrect) {
+          score += 1;
+        }
+
+        return {
+          questionId: question.id,
+          prompt: question.prompt,
+          selectedIndex: selectedIndex ?? null,
+          correctIndex: question.correctIndex,
+          isCorrect,
+          explanation: question.explanation,
+        };
       }
-
-      return {
-        questionId: question.id,
-        prompt: question.prompt,
-        selectedIndex: selectedIndex ?? null,
-        correctIndex: question.correctIndex,
-        isCorrect,
-        explanation: question.explanation,
-      };
-    });
+    );
 
     const attempt = await prisma.attempt.create({
       data: {
@@ -195,8 +213,8 @@ export const submitQuest = async (req: AuthRequest, res: Response) => {
         totalQuestions: quest.questions.length,
         answers: {
           create: gradedAnswers
-            .filter((answer) => answer.selectedIndex !== null)
-            .map((answer) => ({
+            .filter((answer: GradedAnswer) => answer.selectedIndex !== null)
+            .map((answer: GradedAnswer) => ({
               questionId: answer.questionId,
               selectedIndex: answer.selectedIndex as number,
               isCorrect: answer.isCorrect,

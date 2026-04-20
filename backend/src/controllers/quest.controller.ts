@@ -27,6 +27,13 @@ const createQuestSchema = z.object({
 
 const updateQuestSchema = createQuestSchema;
 
+type FrontendQuestionInput = {
+  prompt: string;
+  choices: [string, string, string, string];
+  correctIndex: 0 | 1 | 2 | 3;
+  explanation: string;
+};
+
 function mapQuestionForFrontend(question: {
   prompt: string;
   choiceA: string;
@@ -71,7 +78,7 @@ export const createQuest = async (req: AuthRequest, res: Response) => {
         title,
         ownerId: req.user.userId,
         questions: {
-          create: questions.map((question) => ({
+          create: questions.map((question: FrontendQuestionInput) => ({
             prompt: question.prompt,
             choiceA: question.choices[0],
             choiceB: question.choices[1],
@@ -187,7 +194,16 @@ export const getQuestById = async (req: AuthRequest, res: Response) => {
           title: quest.title,
           ownerId: quest.ownerId,
           createdAt: quest.createdAt,
-          questions: quest.questions.map((question) => ({
+          questions: quest.questions.map((question: {
+            id: number;
+            prompt: string;
+            choiceA: string;
+            choiceB: string;
+            choiceC: string;
+            choiceD: string;
+            correctIndex: number;
+            explanation: string;
+          }) => ({
             id: question.id,
             ...mapQuestionForFrontend(question),
           })),
@@ -201,7 +217,14 @@ export const getQuestById = async (req: AuthRequest, res: Response) => {
         title: quest.title,
         owner: quest.owner,
         createdAt: quest.createdAt,
-        questions: quest.questions.map((question) => ({
+        questions: quest.questions.map((question: {
+          id: number;
+          prompt: string;
+          choiceA: string;
+          choiceB: string;
+          choiceC: string;
+          choiceD: string;
+        }) => ({
           id: question.id,
           prompt: question.prompt,
           choices: [
@@ -260,7 +283,7 @@ export const updateQuest = async (req: AuthRequest, res: Response) => {
         title,
         questions: {
           deleteMany: {},
-          create: questions.map((question) => ({
+          create: questions.map((question: FrontendQuestionInput) => ({
             prompt: question.prompt,
             choiceA: question.choices[0],
             choiceB: question.choices[1],
