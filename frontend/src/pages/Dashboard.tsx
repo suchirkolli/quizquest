@@ -295,7 +295,7 @@ function StudentDashboard({ user, token }: { user: StoredUser; token: string }) 
                     <button
                       type="button"
                       className="qc-gold-button dashboard-action-btn"
-                      onClick={() => {alert('Stats coming soon!'); Click();}} // click
+                      onClick={() => { navigate(`/quests/${quest.id}/stats`); Click(); }}
                     >
                       View Stats
                     </button>

@@ -12,6 +12,7 @@ import TeacherRegister from './pages/TeacherRegister';
 import StudentRegister from './pages/StudentRegister';
 import Dashboard from './pages/Dashboard';
 import RunningQuest from './pages/RunningQuest';
+import QuestStats from './pages/QuestStats';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin/create-quest/:id?" element={<AdminQuestCreation />} />
         <Route path="/quests/:id/run" element={<RunningQuest />} />
+        <Route path="/quests/:questId/stats" element={<QuestStats />} />
 
         <Route path="/register/teacher" element={<TeacherRegister />} />
         <Route path="/register/student" element={<StudentRegister />} />
